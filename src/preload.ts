@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld(
                 "minimize",
                 "maximize",
                 "close",
+                "saveFile",
             ];
             if (validChannels.includes(channel)) {
                 return ipcRenderer.invoke(channel, data);
@@ -32,6 +33,15 @@ contextBridge.exposeInMainWorld(
     'bridge', {
         fileOpened: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on("fileOpened", message);
+        },
+        requestFileSave: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on("requestFileSave", message);
+        },
+        onRequest: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on(channel, callback);
+        },
+        sendResponse: (channel: string, data: any) => {
+            ipcRenderer.send(channel, data);
         }
     }
 );

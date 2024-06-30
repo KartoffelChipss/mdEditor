@@ -44,6 +44,21 @@ header {
   padding-left: var(--left-padding);
   background-color: var(--bg-2);
 }
+header .left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+header .left .dot {
+  display: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: var(--font-color-dark);
+}
+header .left .dot.active {
+  display: block;
+}
 
 section.editor {
   position: relative;

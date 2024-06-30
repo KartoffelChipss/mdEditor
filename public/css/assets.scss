@@ -57,6 +57,24 @@ header {
     padding-left: var(--left-padding);
     
     background-color: var(--bg-2);
+
+    .left {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        .dot {
+            display: none;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--font-color-dark);
+
+            &.active {
+                display: block;
+            }
+        }
+    }
 }
 
 section.editor {

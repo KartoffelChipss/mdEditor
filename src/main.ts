@@ -1,7 +1,9 @@
-import { app, BrowserWindow, nativeTheme, dialog, OpenDialogOptions } from 'electron';
+import { app, BrowserWindow, nativeTheme, dialog, OpenDialogOptions, Menu, ipcMain } from 'electron';
 import logger from 'electron-log/main';
 import store from './store';
-import { createWindow } from './windowManager';
+import appMenu from './appMenu';
+import { createWindow, getPath } from './windowManager';
+import fs from 'fs';
 
 const devMode = process.env.NODE_ENV === 'development';
 
@@ -14,7 +16,14 @@ app.on('ready', () => {
         console.log('Dark mode:', nativeTheme.shouldUseDarkColors);
     });
 
-    openFileOrCreateNew();
+    ipcMain.handle("saveFile", async (event, file) => {
+        logger.info("Saving file:", file);
+        fs.writeFileSync(file.path, file.content);
+    });
+
+    Menu.setApplicationMenu(appMenu);
+
+    openFile();
 });
 
 app.on('window-all-closed', () => {
@@ -25,11 +34,11 @@ app.on('window-all-closed', () => {
 
 app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
-        openFileOrCreateNew();
+        openFile();
     }
 });
 
-async function openFileOrCreateNew() {
+export async function openFile() {
     if (fileDialogOpen) return;
     fileDialogOpen = true;
 
@@ -41,7 +50,7 @@ async function openFileOrCreateNew() {
         title: 'Select a Markdown file',
         properties: ["openFile", "createDirectory"],
         filters: [
-            { name: 'Markdown', extensions: ['md', 'markdown']}
+            { name: 'Markdown', extensions: ['md', 'markdown'] }
         ],
         defaultPath: app.getPath('documents'),
     };
@@ -50,13 +59,6 @@ async function openFileOrCreateNew() {
     else dialogg = await dialog.showOpenDialog(dialogOptions);
 
     fileDialogOpen = false;
-
-    // if (canceled) {
-    //     const newFilePath = path.join(app.getPath('documents'), 'Untitled.md');
-    //     createWindow(newFilePath);
-    // } else if (filePaths && filePaths.length > 0) {
-    //     createWindow(filePaths[0]);
-    // }
 
     if (dialogg.canceled) return;
     else if (dialogg.filePaths && dialogg.filePaths.length > 0) createWindow(dialogg.filePaths[0]);

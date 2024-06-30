@@ -6,6 +6,14 @@ import fs from "fs";
 
 const windows: { [key: string]: BrowserWindow } = {};
 
+export function getWindow(filePath: string) {
+    return windows[filePath];
+}
+
+export function getPath(window: BrowserWindow) {
+    return Object.keys(windows).find(key => windows[key] === window);
+}
+
 export function createWindow(filePath: string | null = null) {
     if (filePath && windows[filePath]) {
         windows[filePath].focus();
@@ -15,8 +23,8 @@ export function createWindow(filePath: string | null = null) {
     logger.info("Opening window for file:", filePath);
 
     const mainWindow = new BrowserWindow({
-        width: 1300,
-        height: 800,
+        width: store.get("windowPosition.width") ?? 1300,
+        height: store.get("windowPosition.height") ?? 800,
         backgroundColor: "#101215",
         darkTheme: true,
         frame: false,
@@ -32,7 +40,7 @@ export function createWindow(filePath: string | null = null) {
         },
     });
 
-    mainWindow.loadFile(path.join(__dirname, '../public/index.html'));
+    const fileLoaded = mainWindow.loadFile(path.join(__dirname, '../public/index.html'));
 
     mainWindow.on("move", () => store.set(`windowPosition`, mainWindow.getBounds()));
     mainWindow.on("resize", () => store.set(`windowPosition`, mainWindow.getBounds()));
@@ -44,16 +52,26 @@ export function createWindow(filePath: string | null = null) {
     if (filePath) {
         windows[filePath] = mainWindow;
 
-        fs.readFile(filePath, 'utf-8', (err, data) => {
+        fs.readFile(filePath, 'utf-8', async (err, data) => {
             if (err) {
                 logger.error("Failed to read file:", err);
                 return;
             }
 
+            await fileLoaded;
+
             logger.info("Sending file data to window:", filePath);
 
-            mainWindow.webContents.send('fileOpened', data);
+            const fileName = path.basename(filePath);
+
+            mainWindow.webContents.send('fileOpened', {
+                path: filePath,
+                name: fileName,
+                content: data,
+            });
             mainWindow.show();
         });
+    } else {
+        mainWindow.show();
     }
 }
