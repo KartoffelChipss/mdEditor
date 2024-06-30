@@ -1,0 +1,179 @@
+:root {
+  --f: var(--font-color-dark);
+}
+
+.cm-s-mdedit {
+  font-family: var(--system-font-mono);
+}
+
+.cm-s-mdedit.CodeMirror {
+  height: 100%;
+  background: var(--bg-1);
+  color: var(--f);
+  font-size: 16px;
+}
+
+.cm-s-mdedit span.cm-meta {
+  color: green;
+}
+
+.cm-s-mdedit span.cm-number {
+  color: var(--f);
+}
+
+.cm-s-mdedit span.cm-def {
+  color: var(--f);
+  font-style: italic;
+}
+
+.cm-s-mdedit span.cm-variable {
+  color: var(--f);
+}
+
+.cm-s-mdedit span.cm-variable-2 {
+  display: inline-block;
+  color: var(--f);
+}
+.cm-s-mdedit span.cm-variable-2::first-letter {
+  color: var(--orange);
+}
+
+.cm-s-mdedit span.cm-variable-3 {
+  display: inline-block;
+  color: var(--f);
+}
+.cm-s-mdedit span.cm-variable-3::first-letter {
+  color: var(--orange);
+}
+
+.cm-s-mdedit span.cm-keyword {
+  display: inline-block;
+  color: var(--f);
+}
+.cm-s-mdedit span.cm-keyword::first-letter {
+  color: var(--orange);
+}
+
+.cm-s-mdedit span.cm-type {
+  color: #abc;
+  font-weight: 700;
+}
+
+.cm-s-mdedit span.cm-property {
+  color: #ffc66d;
+}
+
+.cm-s-mdedit span.cm-operator {
+  color: #a9b7c6;
+}
+
+.cm-s-mdedit span.cm-string {
+  color: #6a8759;
+}
+
+.cm-s-mdedit span.cm-string-2 {
+  color: #6a8759;
+}
+
+.cm-s-mdedit span.cm-comment {
+  color: #61a151;
+  font-style: italic;
+}
+
+.cm-s-mdedit span.cm-link {
+  color: #cc7832;
+}
+
+.cm-s-mdedit span.cm-atom {
+  color: #cc7832;
+}
+
+.cm-s-mdedit span.cm-error {
+  color: #bc3f3c;
+}
+
+.cm-s-mdedit span.cm-tag {
+  color: #629755;
+  font-weight: 700;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.cm-s-mdedit span.cm-attribute {
+  color: #6897bb;
+}
+
+.cm-s-mdedit span.cm-qualifier {
+  color: #6a8759;
+}
+
+.cm-s-mdedit span.cm-bracket {
+  color: #a9b7c6;
+}
+
+.cm-s-mdedit span.cm-builtin {
+  color: #ff9e59;
+}
+
+.cm-s-mdedit span.cm-special {
+  color: #ff9e59;
+}
+
+.cm-s-mdedit span.cm-matchhighlight {
+  color: #fff;
+  background-color: rgba(50, 89, 48, 0.7);
+  font-weight: 400;
+}
+
+.cm-s-mdedit span.cm-searching {
+  color: #fff;
+  background-color: rgba(61, 115, 59, 0.7);
+  font-weight: 400;
+}
+
+.cm-s-mdedit .CodeMirror-cursor {
+  border-left: 2px solid var(--accent-color-1);
+}
+
+.cm-s-mdedit .CodeMirror-activeline-background {
+  background: var(--bg-3);
+}
+
+.cm-s-mdedit .CodeMirror-gutters {
+  background: transparent;
+  border-right: none;
+  padding-right: 5px;
+}
+
+.cm-s-mdedit .CodeMirror-guttermarker {
+  color: #ffee80;
+}
+
+.cm-s-mdedit .CodeMirror-guttermarker-subtle {
+  color: #d0d0d0;
+}
+
+.cm-s-mdedit .CodeMirrir-linenumber {
+  color: #606366;
+}
+
+.cm-s-mdedit .CodeMirror-matchingbracket {
+  background-color: #3b514d;
+  color: #ffef28 !important;
+  font-weight: 700;
+}
+
+.cm-s-mdedit div.CodeMirror-selected {
+  background: #214283;
+}
+
+.CodeMirror-hints.mdedit {
+  font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+  color: #9c9e9e;
+  background-color: #3b3e3f !important;
+}
+
+.CodeMirror-hints.mdedit .CodeMirror-hint-active {
+  background-color: #494d4e !important;
+  color: #9c9e9e !important;
+}/*# sourceMappingURL=editor.css.map */

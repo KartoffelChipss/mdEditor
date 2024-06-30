@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mdEdit</title>
+
+    <link rel="stylesheet" href="css/assets.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+    <link rel="stylesheet" href="css/editor-new.css">
+</head>
+
+<body>
+    <header>
+        <div class="left">
+            <div class="trafficlight"></div>
+            <span id="fileName" class="fileName">mymarkdownfile.md</span>
+        </div>
+        <div class="right">
+
+        </div>
+    </header>
+
+    <section id="editor" class="editor">
+        <textarea id="editorTextarea" class="editorTextarea"></textarea>
+
+        <!-- <div class="test"></div> -->
+    </section>
+
+    <section id="preview">
+
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/markdown/markdown.min.js" integrity="sha512-DmMao0nRIbyDjbaHc8fNd3kxGsZj9PCU6Iu/CeidLQT9Py8nYVA5n0PqXYmvqNdU+lCiTHOM/4E7bM/G8BttJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/closetag.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/selection/active-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/matchbrackets.min.js"></script>
+    <script src="js/editor.js"></script>
+    <script src="../dist/renderer.js"></script>
+</body>
+
+</html>
