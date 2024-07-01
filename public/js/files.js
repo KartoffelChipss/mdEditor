@@ -1,12 +1,24 @@
 let mdFile = null;
 let originalContent = null;
 
+function setFilename(name) {
+    document.getElementById("fileName").innerText = name;
+    document.querySelector("title").innerText = name;
+}
+
+function setFileEdited(value) {
+    if (value) {
+        document.getElementById("dot").classList.add("active");
+    } else {
+        document.getElementById("dot").classList.remove("active");
+    }
+}
+
 window.bridge.fileOpened((e, file) => {
     console.log("File opened: ", file);
     const fileContent = file.content;
 
-    document.getElementById("fileName").innerText = file.name;
-    document.querySelector("title").innerText = file.name;
+    setFilename(file.name);
     originalContent = file.content;
     mdFile = file;
     
@@ -17,14 +29,20 @@ editor.on("change", () => {
     const content = editor.getValue();
     if (content !== originalContent) {
         mdFile.content = content;
-        document.getElementById("dot").classList.add("active");
+        setFileEdited(true);
     } else {
-        document.getElementById("dot").classList.remove("active");
+        setFileEdited(false);
     }
 });
 
-window.bridge.requestFileSave((event, message) => {
-    window.api.invoke("saveFile", mdFile);
+window.bridge.requestFileSave((event, path, name) => {
+    console.log("Save requested: ", path, name);
+    window.api.invoke("saveFile", {
+        file: mdFile,
+        path: path,
+        name: name
+    });
     originalContent = mdFile.content;
-    document.getElementById("dot").classList.remove("active");
+    setFilename(name);
+    setFileEdited(false);
 });

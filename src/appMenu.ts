@@ -1,29 +1,57 @@
-import { app, BrowserWindow, ipcMain, Menu, MenuItem, MenuItemConstructorOptions, shell } from "electron";
-import { createWindow, getPath } from "./windowManager";
+import { app, BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions, clipboard, shell } from "electron";
+import { createWindow, getPath, setPath } from "./windowManager";
 import { openFile } from "./main";
+import { showSaveFileDialog } from "./dialog";
+import path, { basename } from "path";
+import { addRecentFile, clearRecentFiles, getRecentFiles } from "./store";
 
 const isMac = process.platform === "darwin";
 
-const appMenuItem: MenuItemConstructorOptions = {
-    label: app.name,
-    submenu: [
-        { role: 'about' },
-        { type: 'separator' },
-        { role: 'services' },
-        { type: 'separator' },
-        { role: 'hide' },
-        { role: 'hideOthers' },
-        { role: 'unhide' },
-        { type: 'separator' },
-        { role: 'quit' }
-    ]
-};
+export function updateMenu() {
+    const focusedWindow = BrowserWindow.getFocusedWindow();
+    const recentFiles = getRecentFiles();
 
-const appMenuTemplate: MenuItemConstructorOptions[] = [
-    // { role: 'appMenu' } (Mac only)
-    isMac ? appMenuItem : {},
-    // { role: 'fileMenu' }
-    {
+    const appMenuItem: MenuItemConstructorOptions = {
+        label: app.name,
+        submenu: [
+            { role: 'about' },
+            { type: 'separator' },
+            { role: 'services' },
+            { type: 'separator' },
+            { role: 'hide' },
+            { role: 'hideOthers' },
+            { role: 'unhide' },
+            { type: 'separator' },
+            { role: 'quit' }
+        ]
+    };
+    
+    const recentFilesMenuItems: MenuItemConstructorOptions[] = recentFiles.map((file, index) => {
+        return {
+            label: file.name.split(".")[0],
+            click: () => {
+                createWindow(file.path);
+            },
+            accelerator: `CmdOrCtrl+${index + 1}`,
+        }
+    });
+
+    let recentMenuItem: MenuItemConstructorOptions = {
+        label: 'Open Recent',
+        submenu: recentFilesMenuItems,
+    };
+
+    if (recentFiles.length === 0) recentFilesMenuItems.push({ label: 'No recent files', enabled: false });
+    recentFilesMenuItems.push({ type: 'separator' });
+    recentFilesMenuItems.push({ 
+        label: 'Clear Recent',
+        click: () => {
+            clearRecentFiles();
+            updateMenu();
+        },
+    });
+    
+    const fileMenu: MenuItemConstructorOptions = {
         label: 'File',
         submenu: [
             {
@@ -40,15 +68,28 @@ const appMenuTemplate: MenuItemConstructorOptions[] = [
                     openFile();
                 }
             },
+            recentMenuItem,
+            { type: 'separator' },
+            isMac ? { role: 'close', label: "Close" } : { role: 'quit' },
             {
                 label: 'Save',
                 accelerator: 'CmdOrCtrl+S',
+                id: 'save',
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     const focusedWindow = BrowserWindow.getFocusedWindow();
                     if (focusedWindow) {
                         const filePath = getPath(focusedWindow);
                         if (filePath) {
-                            focusedWindow.webContents.send("requestFileSave", filePath);
+                            focusedWindow.webContents.send("requestFileSave", filePath, basename(filePath));
+                        } else {
+                            showSaveFileDialog().then((filePath) => {
+                                if (filePath) {
+                                    focusedWindow.webContents.send("requestFileSave", filePath, basename(filePath));
+                                    addRecentFile(filePath);
+                                    updateMenu();
+                                }
+                            });
                         }
                     }
                 }
@@ -56,15 +97,68 @@ const appMenuTemplate: MenuItemConstructorOptions[] = [
             {
                 label: 'Save As...',
                 accelerator: 'CmdOrCtrl+Shift+S',
+                id: 'saveAs',
+                enabled: focusedWindow ? true : false,
                 click: () => {
-                    // Add your save as logic here
+                    const focusedWindow = BrowserWindow.getFocusedWindow();
+                    if (focusedWindow) {
+                        showSaveFileDialog().then((filePath) => {
+                            if (!filePath) return;
+                            setPath(focusedWindow, filePath);
+                            focusedWindow.webContents.send("requestFileSave", filePath, basename(filePath));
+                            addRecentFile(filePath);
+                            updateMenu();
+                        });
+                    }
                 }
             },
-            isMac ? { role: 'close' } : { role: 'quit' }
+            { type: 'separator' },
+            {
+                label: "Reveal in Finder",
+                enabled: focusedWindow ? true : false,
+                accelerator: "Option+CmdOrCtrl+R",
+                click: () => {
+                    const focusedWindow = BrowserWindow.getFocusedWindow();
+                    if (focusedWindow) {
+                        const filePath = getPath(focusedWindow);
+                        if (filePath) shell.showItemInFolder(filePath);
+                    }
+                }
+            },
+            { 
+                label: "Copy Path",
+                submenu: [
+                    {
+                        label: "File Path",
+                        accelerator: "CmdOrCtrl+Shift+F",
+                        enabled: focusedWindow ? true : false,
+                        click: () => {
+                            const focusedWindow = BrowserWindow.getFocusedWindow();
+                            if (focusedWindow) {
+                                const filePath = getPath(focusedWindow);
+                                if (filePath) {
+                                    clipboard.writeText(filePath);
+                                }
+                            }
+                        }
+                    },
+                    {
+                        label: "Folder Path",
+                        enabled: focusedWindow ? true : false,
+                        click: () => {
+                            const focusedWindow = BrowserWindow.getFocusedWindow();
+                            if (focusedWindow) {
+                                const filePath = getPath(focusedWindow);
+                                if (filePath) clipboard.writeText(path.dirname(filePath));
+                            }
+                        }
+                    }
+                ]
+            }
         ]
-    },
-    // { role: 'editMenu' }
-    {
+    };
+    
+    const editMenu: MenuItemConstructorOptions = {
         label: 'Edit',
         submenu: [
             { role: 'undo' },
@@ -77,35 +171,45 @@ const appMenuTemplate: MenuItemConstructorOptions[] = [
             { role: 'delete' },
             { role: 'selectAll' }
         ]
-    },
-    // { role: 'viewMenu' }
-    {
-        label: 'View',
-        submenu: [
-            { role: 'reload' },
-            { role: 'forceReload' },
-            { role: 'toggleDevTools' },
-            { type: 'separator' },
-            { role: 'resetZoom' },
-            { role: 'zoomIn' },
-            { role: 'zoomOut' },
-            { type: 'separator' },
-            { role: 'togglefullscreen' }
-        ]
-    },
-    { role: 'windowMenu' },
-    {
-        label: 'Help',
-        submenu: [
-            {
-                label: 'Learn More',
-                click: async () => {
-                    const { shell } = require('electron')
-                    await shell.openExternal('https://electronjs.org')
+    };
+    
+    const appMenuTemplate: MenuItemConstructorOptions[] = [
+        isMac ? appMenuItem : {},
+        fileMenu,
+        editMenu,
+        {
+            label: 'View',
+            submenu: [
+                { role: 'reload' },
+                { role: 'forceReload' },
+                { role: 'toggleDevTools' },
+                { type: 'separator' },
+                { role: 'resetZoom' },
+                { role: 'zoomIn' },
+                { role: 'zoomOut' },
+                { type: 'separator' },
+                { role: 'togglefullscreen' }
+            ]
+        },
+        { role: 'windowMenu' },
+        {
+            label: 'Help',
+            submenu: [
+                {
+                    label: 'Learn More',
+                    click: async () => {
+                        const { shell } = require('electron')
+                        await shell.openExternal('https://electronjs.org')
+                    }
                 }
-            }
-        ]
-    }
-];
+            ]
+        }
+    ];
 
-export default Menu.buildFromTemplate(appMenuTemplate);
+    const menu = Menu.buildFromTemplate(appMenuTemplate);
+
+    Menu.setApplicationMenu(menu);
+}
+
+app.on('browser-window-focus', updateMenu);
+app.on('browser-window-blur', updateMenu);

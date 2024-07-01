@@ -1,8 +1,9 @@
 import { BrowserWindow } from "electron";
 import logger from "electron-log";
 import path from "path";
-import store from "./store";
+import { getStore } from "./store";
 import fs from "fs";
+// import { updateMenuItems } from "./appMenu";
 
 const windows: { [key: string]: BrowserWindow } = {};
 
@@ -14,6 +15,12 @@ export function getPath(window: BrowserWindow) {
     return Object.keys(windows).find(key => windows[key] === window);
 }
 
+export function setPath(window: BrowserWindow, filePath: string) {
+    const oldPath = getPath(window);
+    if (oldPath) delete windows[oldPath];
+    windows[filePath] = window;
+}
+
 export function createWindow(filePath: string | null = null) {
     if (filePath && windows[filePath]) {
         windows[filePath].focus();
@@ -23,8 +30,8 @@ export function createWindow(filePath: string | null = null) {
     logger.info("Opening window for file:", filePath);
 
     const mainWindow = new BrowserWindow({
-        width: store.get("windowPosition.width") ?? 1300,
-        height: store.get("windowPosition.height") ?? 800,
+        width: getStore().get("windowPosition.width") ?? 1300,
+        height: getStore().get("windowPosition.height") ?? 800,
         backgroundColor: "#101215",
         darkTheme: true,
         frame: false,
@@ -42,11 +49,12 @@ export function createWindow(filePath: string | null = null) {
 
     const fileLoaded = mainWindow.loadFile(path.join(__dirname, '../public/index.html'));
 
-    mainWindow.on("move", () => store.set(`windowPosition`, mainWindow.getBounds()));
-    mainWindow.on("resize", () => store.set(`windowPosition`, mainWindow.getBounds()));
+    mainWindow.on("move", () => getStore().set(`windowPosition`, mainWindow.getBounds()));
+    mainWindow.on("resize", () => getStore().set(`windowPosition`, mainWindow.getBounds()));
 
     mainWindow.on("closed", () => {
         if (filePath) delete windows[filePath];
+        // updateMenuItems();
     });
 
     if (filePath) {
