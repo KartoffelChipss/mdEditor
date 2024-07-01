@@ -6,12 +6,31 @@ import { showOpenFileDialog } from "./dialog";
 import { updateMenu } from './appMenu';
 import { addRecentFile } from "./store";
 import mdConverter from './mdConverter';
+import path from 'path';
+import 'dotenv/config';
 
 const devMode = process.env.NODE_ENV === 'development';
+
+if (devMode) {
+    console.log("====== ======");
+    console.log("Started in devmode!");
+    console.log("====== ======\n");
+}
+
+const appRoot = path.join(`${app.getPath("appData") ?? "."}${path.sep}.mdEdit`);
+if (!fs.existsSync(appRoot)) fs.mkdirSync(appRoot, { recursive: true });
+
+logger.transports.file.resolvePathFn = () => path.join(appRoot, "logs.log");
+logger.transports.file.level = "info";
 
 let fileDialogOpen = false;
 
 app.on('ready', () => {
+    let initialFile: string | null = null;
+    let openedInitialFile = false;
+    if (devMode && process.argv.length >= 2 ) initialFile = process.argv[2];
+    if (!devMode && process.argv.length >= 2) initialFile = process.argv[1];
+
     console.log('Dark mode:', nativeTheme.shouldUseDarkColors);
 
     nativeTheme.on("updated", () => {
@@ -32,6 +51,14 @@ app.on('ready', () => {
         shell.openExternal(data);
     });
 
+    ipcMain.handle("openLinkInFinder", (event, data) => {
+        const basePath = path.dirname(data.path);
+        const fullPath = path.resolve(basePath, data.url);
+
+        logger.info("Reveal in Finder:", fullPath);
+        shell.showItemInFolder(fullPath);
+    });
+
     app.setAboutPanelOptions({
         applicationName: "mdEditor",
         applicationVersion: app.getVersion(),
@@ -41,20 +68,36 @@ app.on('ready', () => {
         copyright: "© 2024 Jan Straßburger"
     });
 
+    if (initialFile) {
+        logger.info("Opening initial file:", initialFile);
+        createWindow(initialFile);
+        addRecentFile(initialFile);
+        openedInitialFile = true;
+    }
+
+    app.on('open-file', (event, filePath) => {
+        event.preventDefault();
+
+        logger.info("Opening file:", filePath);
+    
+        createWindow(filePath);
+        addRecentFile(filePath);
+    });
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length > 0 || (initialFile && !openedInitialFile)) return;
+        
+        openFile();
+    });
+
     updateMenu();
 
-    openFile();
+    if (!initialFile) openFile();
 });
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
-    }
-});
-
-app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-        openFile();
     }
 });
 

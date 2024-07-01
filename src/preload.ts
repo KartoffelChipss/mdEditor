@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld(
                 "maximize",
                 "close",
                 "openLink",
+                "openLinkInFinder",
                 "saveFile",
                 "convertMDtoHTML",
             ];

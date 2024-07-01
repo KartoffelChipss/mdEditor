@@ -1,37 +1,56 @@
 {
-  "name": "mdedit",
-  "description": "A simple markdown editor made with Electron",
-  "version": "1.0.0",
-  "main": "dist/main.js",
-  "scripts": {
-    "build": "tsc",
-    "start": "npm run build && electron ."
-  },
-  "module": "index.ts",
-  "author": {
-    "name": "Jan Straßburger",
-    "email": "contact@strassburger.org",
-    "url": "https://strassburger.org"
-  },
-  "license": "GNU General Public License v3.0",
-  "build": {
-    "appId": "org.strassburger.mdedit",
-    "productName": "mdEdit",
-    "mac": {
-      "extendInfo": {
-        "NSHumanReadableCopyright": "© 2024 Jan Straßburger"
-      }
+    "name": "mdedit",
+    "description": "A simple markdown editor made with Electron",
+    "version": "1.0.0",
+    "main": "dist/main.js",
+    "scripts": {
+        "build": "tsc",
+        "start": "npm run build && electron .",
+        "startfile": "npm run build && electron . /Users/jan/Documents/'Test ich habe keine ahnung.md'",
+        "dist:win": "electron-builder --win",
+        "dist:linux": "electron-builder --linux",
+        "dist:mac": "npm run build && electron-builder --mac --x64 --arm64"
+    },
+    "module": "index.ts",
+    "author": {
+        "name": "Jan Straßburger",
+        "email": "contact@strassburger.org",
+        "url": "https://strassburger.org"
+    },
+    "license": "GNU General Public License v3.0",
+    "build": {
+        "appId": "org.strassburger.mdedit",
+        "productName": "mdEdit",
+        "copyright": "© 2024 Jan Straßburger",
+        "directories": {
+            "output": "builds"
+        },
+        "mac": {
+            "target": "dmg",
+            "category": "public.app-category.developer-tools",
+            "extendInfo": {
+                "NSHumanReadableCopyright": "© 2024 Jan Straßburger"
+            }
+        },
+        "fileAssociations": [
+            {
+                "ext": ["md", "markdown"],
+                "name": "Markdown File",
+                "role": "Editor"
+            }
+        ]
+    },
+    "devDependencies": {
+        "@types/node": "^18.0.0",
+        "electron": "^31.1.0",
+        "typescript": "^4.7.4",
+        "electron-builder": "^24.13.3"
+    },
+    "dependencies": {
+        "@types/showdown": "^2.0.6",
+        "dotenv": "^16.4.5",
+        "electron-log": "^5.1.5",
+        "electron-store": "8.2.0",
+        "showdown": "^2.1.0"
     }
-  },
-  "devDependencies": {
-    "@types/node": "^18.0.0",
-    "electron": "^31.1.0",
-    "typescript": "^4.7.4"
-  },
-  "dependencies": {
-    "@types/showdown": "^2.0.6",
-    "electron-log": "^5.1.5",
-    "electron-store": "8.2.0",
-    "showdown": "^2.1.0"
-  }
 }
