@@ -22,6 +22,15 @@ app.on('ready', () => {
         fs.writeFileSync(data.path, data.file.content);
     });
 
+    app.setAboutPanelOptions({
+        applicationName: "mdEditor",
+        applicationVersion: app.getVersion(),
+        version: "",
+        authors: ["Jan Straßburger (Kartoffelchipss)"],
+        website: "https://strassburger.org/",
+        copyright: "© 2024 Jan Straßburger"
+    });
+    
     updateMenu();
 
     openFile();
