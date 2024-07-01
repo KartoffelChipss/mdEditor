@@ -20,7 +20,9 @@ contextBridge.exposeInMainWorld(
                 "minimize",
                 "maximize",
                 "close",
+                "openLink",
                 "saveFile",
+                "convertMDtoHTML",
             ];
             if (validChannels.includes(channel)) {
                 return ipcRenderer.invoke(channel, data);
@@ -36,6 +38,9 @@ contextBridge.exposeInMainWorld(
         },
         requestFileSave: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on("requestFileSave", message);
+        },
+        fullscreenChanged: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on("fullscreenChanged", message);
         },
         onRequest: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on(channel, callback);

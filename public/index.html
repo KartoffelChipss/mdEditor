@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="css/assets.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
     <link rel="stylesheet" href="css/editor-new.css">
+    <link rel="stylesheet" href="css/preview.css">
 </head>
 
 <body>
@@ -19,17 +20,23 @@
             <div class="dot" id="dot"></div>
         </div>
         <div class="right">
-
+            <div class="buttons">
+                <button type="button" id="editor-btn" class="active" onclick="setView('editor')"><img src="img/edit.svg"></button>
+                <button type="button" id="splitview-btn" onclick="setView('splitview')"><img src="img/splitview.svg"></button>
+                <button type="button" id="preview-btn" onclick="setView('preview')"><img src="img/preview.svg"></button>
+            </div>
         </div>
     </header>
 
-    <section id="editor" class="editor">
-        <textarea id="editorTextarea" class="editorTextarea"></textarea>
-    </section>
-
-    <section id="preview">
-
-    </section>
+    <div class="sections">
+        <section id="editor" class="editor active" style="width: 100%;">
+            <textarea id="editorTextarea" class="editorTextarea"></textarea>
+        </section>
+    
+        <section id="preview" class="preview">
+            <div id="previewContent" class="previewContent markdown-body"></div>
+        </section>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/markdown/markdown.min.js" integrity="sha512-DmMao0nRIbyDjbaHc8fNd3kxGsZj9PCU6Iu/CeidLQT9Py8nYVA5n0PqXYmvqNdU+lCiTHOM/4E7bM/G8BttJg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -40,6 +47,7 @@
     <script src="../dist/renderer.js"></script>
 
     <script src="js/files.js"></script>
+    <script src="js/main.js"></script>
 </body>
 
 </html>

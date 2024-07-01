@@ -3,7 +3,7 @@ import logger from "electron-log";
 import path from "path";
 import { getStore } from "./store";
 import fs from "fs";
-// import { updateMenuItems } from "./appMenu";
+import { updateMenu } from "./appMenu";
 
 const windows: { [key: string]: BrowserWindow } = {};
 
@@ -54,8 +54,11 @@ export function createWindow(filePath: string | null = null) {
 
     mainWindow.on("closed", () => {
         if (filePath) delete windows[filePath];
-        // updateMenuItems();
+        updateMenu();
     });
+
+    mainWindow.on("enter-full-screen", () => mainWindow.webContents.send("fullscreenChanged", true));
+    mainWindow.on("leave-full-screen", () => mainWindow.webContents.send("fullscreenChanged", false));
 
     if (filePath) {
         windows[filePath] = mainWindow;
@@ -82,4 +85,24 @@ export function createWindow(filePath: string | null = null) {
     } else {
         mainWindow.show();
     }
+}
+
+export function openFileInWindow(filePath: string, window: BrowserWindow) {
+    fs.readFile(filePath, 'utf-8', async (err, data) => {
+        if (err) {
+            logger.error("Failed to read file:", err);
+            return;
+        }
+
+        logger.info("Sending file data to window:", filePath);
+
+        const fileName = path.basename(filePath);
+
+        window.webContents.send('fileOpened', {
+            path: filePath,
+            name: fileName,
+            content: data,
+        });
+        window.show();
+    });
 }

@@ -27,6 +27,11 @@ window.bridge.fileOpened((e, file) => {
 
 editor.on("change", () => {
     const content = editor.getValue();
+
+    window.api.invoke("convertMDtoHTML", content).then((html) => {
+        previewContent.innerHTML = html;
+    });
+
     if (content !== originalContent) {
         mdFile.content = content;
         setFileEdited(true);

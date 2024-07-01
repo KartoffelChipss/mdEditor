@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions, clipboard, shell } from "electron";
-import { createWindow, getPath, setPath } from "./windowManager";
+import { createWindow, getPath, openFileInWindow, setPath } from "./windowManager";
 import { openFile } from "./main";
 import { showSaveFileDialog } from "./dialog";
 import path, { basename } from "path";
@@ -180,8 +180,36 @@ export function updateMenu() {
         {
             label: 'View',
             submenu: [
-                { role: 'reload' },
-                { role: 'forceReload' },
+                {
+                    label: 'Reload',
+                    accelerator: 'CmdOrCtrl+R',
+                    enabled: focusedWindow ? true : false,
+                    click: async () => {
+                        const focusedWindow = BrowserWindow.getFocusedWindow();
+                        if (focusedWindow) {
+                            focusedWindow.reload();
+                            setTimeout(() => {
+                                const filePath = getPath(focusedWindow);
+                                if (filePath) openFileInWindow(filePath, focusedWindow);
+                            }, 100);
+                        }
+                    }
+                },
+                // {
+                //     label: 'Force Reload',
+                //     accelerator: 'CmdOrCtrl+Shift+R',
+                //     enabled: focusedWindow ? true : false,
+                //     click: async () => {
+                //         const focusedWindow = BrowserWindow.getFocusedWindow();
+                //         if (focusedWindow) {
+                //             focusedWindow.reload();
+                //             setTimeout(() => {
+                //                 const filePath = getPath(focusedWindow);
+                //                 if (filePath) openFileInWindow(filePath, focusedWindow);
+                //             }, 100);
+                //         }
+                //     }
+                // },
                 { role: 'toggleDevTools' },
                 { type: 'separator' },
                 { role: 'resetZoom' },

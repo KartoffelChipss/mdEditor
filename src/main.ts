@@ -1,10 +1,11 @@
-import { app, BrowserWindow, nativeTheme, dialog, OpenDialogOptions, Menu, ipcMain } from 'electron';
+import { app, BrowserWindow, nativeTheme, shell, ipcMain } from 'electron';
 import logger from 'electron-log/main';
 import { createWindow, getPath } from './windowManager';
 import fs from 'fs';
 import { showOpenFileDialog } from "./dialog";
 import { updateMenu } from './appMenu';
 import { addRecentFile } from "./store";
+import mdConverter from './mdConverter';
 
 const devMode = process.env.NODE_ENV === 'development';
 
@@ -22,6 +23,15 @@ app.on('ready', () => {
         fs.writeFileSync(data.path, data.file.content);
     });
 
+    ipcMain.handle("convertMDtoHTML", (event, data) => {
+        return mdConverter.makeHtml(data);
+    });
+
+    ipcMain.handle("openLink", (event, data) => {
+        logger.info("Opening link:", data);
+        shell.openExternal(data);
+    });
+
     app.setAboutPanelOptions({
         applicationName: "mdEditor",
         applicationVersion: app.getVersion(),
@@ -30,7 +40,7 @@ app.on('ready', () => {
         website: "https://strassburger.org/",
         copyright: "© 2024 Jan Straßburger"
     });
-    
+
     updateMenu();
 
     openFile();
