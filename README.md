@@ -1,6 +1,6 @@
 <p align="center">
   <img height="80px" width="80px" src="https://file.strassburger.dev/mdEdit.png" alt="logo">
-  <h3 align="center">mdEditor</h3>
+  <h3 align="center"><b>mdEditor</b></h3>
 
   <p align="center">Simple Markdown Editor for MacOS</p>
 </p>
