@@ -1,5 +1,5 @@
 {
-    "name": "mdedit",
+    "name": "mdeditor",
     "description": "A simple markdown editor made with Electron",
     "version": "1.0.0",
     "main": "dist/main.js",
@@ -19,8 +19,8 @@
     },
     "license": "GNU General Public License v3.0",
     "build": {
-        "appId": "org.strassburger.mdedit",
-        "productName": "mdEdit",
+        "appId": "org.strassburger.mdeditor",
+        "productName": "mdEditor",
         "copyright": "© 2024 Jan Straßburger",
         "directories": {
             "output": "builds"
@@ -28,6 +28,7 @@
         "mac": {
             "target": "dmg",
             "category": "public.app-category.developer-tools",
+            "icon": "public/img/logo.icns",
             "extendInfo": {
                 "NSHumanReadableCopyright": "© 2024 Jan Straßburger"
             }

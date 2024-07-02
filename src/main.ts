@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeTheme, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage } from 'electron';
 import logger from 'electron-log/main';
 import { createWindow, getPath } from './windowManager';
 import fs from 'fs';
@@ -23,6 +23,8 @@ if (!fs.existsSync(appRoot)) fs.mkdirSync(appRoot, { recursive: true });
 logger.transports.file.resolvePathFn = () => path.join(appRoot, "logs.log");
 logger.transports.file.level = "info";
 
+const iconPath = path.resolve(path.join(__dirname + "/../public/img/logo.png"));
+
 let fileDialogOpen = false;
 
 app.on('ready', () => {
@@ -30,6 +32,8 @@ app.on('ready', () => {
     let openedInitialFile = false;
     if (devMode && process.argv.length >= 2 ) initialFile = process.argv[2];
     if (!devMode && process.argv.length >= 2) initialFile = process.argv[1];
+
+    if (process.platform === "darwin") app.dock.setIcon(nativeImage.createFromPath(iconPath));
 
     console.log('Dark mode:', nativeTheme.shouldUseDarkColors);
 
@@ -65,7 +69,8 @@ app.on('ready', () => {
         version: "",
         authors: ["Jan Straßburger (Kartoffelchipss)"],
         website: "https://strassburger.org/",
-        copyright: "© 2024 Jan Straßburger"
+        copyright: "© 2024 Jan Straßburger",
+        iconPath: iconPath,
     });
 
     if (initialFile) {
