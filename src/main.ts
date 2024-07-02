@@ -85,9 +85,8 @@ app.on('ready', () => {
     });
 
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length > 0 || (initialFile && !openedInitialFile)) return;
-        
-        openFile();
+        // Only open the if there are no windows open and there is no initial file or the initial file was already opened
+        if (BrowserWindow.getAllWindows().length === 0 && (!initialFile || openedInitialFile)) openFile();
     });
 
     updateMenu();

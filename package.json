@@ -6,7 +6,7 @@
     "scripts": {
         "build": "tsc",
         "start": "npm run build && electron .",
-        "startfile": "npm run build && electron . /Users/jan/Documents/'Test ich habe keine ahnung.md'",
+        "startfile": "npm run build && electron . ./testFile.md",
         "dist:win": "electron-builder --win",
         "dist:linux": "electron-builder --linux",
         "dist:mac": "npm run build && electron-builder --mac --x64 --arm64"
