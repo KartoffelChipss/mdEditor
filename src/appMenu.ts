@@ -469,12 +469,24 @@ export function updateMenu() {
         { role: 'windowMenu' },
         {
             label: 'Help',
+            role: 'help',
             submenu: [
                 {
-                    label: 'Learn More',
+                    label: 'GitHub Repository',
                     click: async () => {
-                        const { shell } = require('electron')
-                        await shell.openExternal('https://electronjs.org')
+                        await shell.openExternal('https://github.com/Kartoffelchipss/mdEditor');
+                    }
+                },
+                {
+                    label: 'Report Issue',
+                    click: async () => {
+                        await shell.openExternal('https://github.com/Kartoffelchipss/mdEditor/issues');
+                    }
+                },
+                {
+                    label: 'Support Discord',
+                    click: async () => {
+                        await shell.openExternal('https://strassburger.org/discord');
                     }
                 }
             ]
