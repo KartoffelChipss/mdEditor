@@ -35,6 +35,19 @@ const store = new Store({
                 }
             },
             default: [],
+        },
+        theme: {
+            type: 'string',
+            enum: ['light', 'dark', 'system'],
+            default: 'system',
+        },
+        lineNumbers: {
+            type: 'boolean',
+            default: true,
+        },
+        lineWrapping: {
+            type: 'boolean',
+            default: true,
         }
     }
 });

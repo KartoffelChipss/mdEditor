@@ -9,6 +9,7 @@
   --accent-color-2: #304e75;
   --orange: #f2a965;
   --green: #097969;
+  --button-active: rgba(0, 0, 0, 0.3);
   --bg-1: #101215;
   --bg-2: #171b22;
   --bg-3: #181c21;
@@ -83,7 +84,7 @@ header .right .buttons button {
   border-radius: 7px;
 }
 header .right .buttons button.active {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--button-active);
 }
 header .right .buttons button:hover {
   cursor: pointer;

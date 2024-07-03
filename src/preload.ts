@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld(
                 "openLinkInFinder",
                 "saveFile",
                 "convertMDtoHTML",
+                "getTheme",
             ];
             if (validChannels.includes(channel)) {
                 return ipcRenderer.invoke(channel, data);
@@ -42,6 +43,9 @@ contextBridge.exposeInMainWorld(
         },
         fullscreenChanged: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on("fullscreenChanged", message);
+        },
+        setTheme: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on("setTheme", message);
         },
         onRequest: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on(channel, callback);

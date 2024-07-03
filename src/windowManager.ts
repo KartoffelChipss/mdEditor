@@ -4,6 +4,7 @@ import path from "path";
 import { getStore } from "./store";
 import fs from "fs";
 import { updateMenu } from "./appMenu";
+import { updateTheme } from "./theme";
 
 const windows: { [key: string]: BrowserWindow } = {};
 
@@ -19,6 +20,14 @@ export function setPath(window: BrowserWindow, filePath: string) {
     const oldPath = getPath(window);
     if (oldPath) delete windows[oldPath];
     windows[filePath] = window;
+}
+
+export function getFocusedWindow(): BrowserWindow | null {
+    return BrowserWindow.getFocusedWindow();
+}
+
+export function getAllWindows(): (BrowserWindow | null)[] {
+    return BrowserWindow.getAllWindows();
 }
 
 export function createWindow(filePath: string | null = null) {

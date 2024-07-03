@@ -1,20 +1,86 @@
-import { app, BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions, clipboard, shell } from "electron";
+import { app, BrowserWindow, Menu, MenuItemConstructorOptions, clipboard, shell } from "electron";
 import { createWindow, getPath, openFileInWindow, setPath } from "./windowManager";
 import { openFile } from "./main";
 import { showSaveFileDialog } from "./dialog";
 import path, { basename } from "path";
-import { addRecentFile, clearRecentFiles, getRecentFiles } from "./store";
+import { addRecentFile, clearRecentFiles, getRecentFiles, getStore } from "./store";
+import { setTheme } from "./theme";
 
 const isMac = process.platform === "darwin";
 
 export function updateMenu() {
     const focusedWindow = BrowserWindow.getFocusedWindow();
     const recentFiles = getRecentFiles();
+    const store = getStore();
 
     const appMenuItem: MenuItemConstructorOptions = {
         label: app.name,
         submenu: [
             { role: 'about' },
+            { type: 'separator' },
+            {
+                label: "Preferences",
+                accelerator: "CmdOrCtrl+,",
+                submenu: [
+                    {
+                        label: "Theme",
+                        submenu: [
+                            {
+                                label: "System",
+                                type: "radio",
+                                checked: store.get("theme") === "system",
+                                click: () => {
+                                    setTheme("system");
+                                    updateMenu();
+                                }
+                            },
+                            {
+                                label: "Dark",
+                                type: "radio",
+                                checked: store.get("theme") === "dark",
+                                click: () => {
+                                    setTheme("dark");
+                                    updateMenu();
+                                }
+                            },
+                            {
+                                label: "Light",
+                                type: "radio",
+                                checked: store.get("theme") === "light",
+                                click: () => {
+                                    setTheme("light");
+                                    updateMenu();
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        label: "Editor",
+                        submenu: [
+                            {
+                                label: "Line Numbers",
+                                type: "checkbox",
+                                checked: store.get("lineNumbers") as boolean,
+                                click: () => {
+                                    console.log("Line Numbers");
+                                    store.set("lineNumbers", !store.get("lineNumbers"));
+                                    updateMenu();
+                                }
+                            },
+                            {
+                                label: "Line Wrapping",
+                                type: "checkbox",
+                                checked: store.get("lineWrapping") as boolean,
+                                click: () => {
+                                    console.log("Line Wrapping");
+                                    store.set("lineWrapping", !store.get("lineWrapping"));
+                                    updateMenu();
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
             { type: 'separator' },
             { role: 'services' },
             { type: 'separator' },

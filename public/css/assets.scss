@@ -15,6 +15,8 @@
     --orange: #f2a965;
     --green: #097969;
 
+    --button-active: rgba(0, 0, 0, 0.3);
+
     --bg-1: #101215;
     --bg-2: #171b22;
     --bg-3: #181c21;
@@ -105,10 +107,8 @@ header {
                 padding: 5px 10px;
                 border-radius: 7px;
 
-                // background-color: rgba(0, 0, 0, 0.3);
-
                 &.active {
-                    background-color: rgba(0, 0, 0, 0.3);
+                    background-color: var(--button-active);
                 }
 
                 &:hover {

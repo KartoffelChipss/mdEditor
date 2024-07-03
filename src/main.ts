@@ -8,6 +8,7 @@ import { addRecentFile } from "./store";
 import mdConverter from './mdConverter';
 import path from 'path';
 import 'dotenv/config';
+import { getCalculatedTheme, getTheme, updateTheme } from './theme';
 
 const devMode = process.env.NODE_ENV === 'development';
 
@@ -35,10 +36,14 @@ app.on('ready', () => {
 
     if (process.platform === "darwin") app.dock.setIcon(nativeImage.createFromPath(iconPath));
 
-    console.log('Dark mode:', nativeTheme.shouldUseDarkColors);
+    updateTheme();
 
     nativeTheme.on("updated", () => {
-        console.log('Dark mode:', nativeTheme.shouldUseDarkColors);
+        updateTheme();
+    });
+
+    ipcMain.handle("getTheme", (event, data) => {
+        return getCalculatedTheme();
     });
 
     ipcMain.handle("saveFile", async (event, data) => {
