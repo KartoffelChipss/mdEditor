@@ -35,7 +35,7 @@
   --color-fg-muted: #7d8590;
   --color-fg-subtle: #6e7681;
   --color-canvas-default: var(--bg-1);
-  --color-canvas-subtle: var(--bg-1);
+  --color-canvas-subtle: var(--bg-3);
   --color-border-default: #7f858f;
   --color-border-muted: #21262d;
   --color-neutral-muted: rgba(110, 118, 129, 0.4);
@@ -124,7 +124,7 @@
   --color-fg-muted: #656d76;
   --color-fg-subtle: #6e7781;
   --color-canvas-default: #ffffff;
-  --color-canvas-subtle: #f6f8fa;
+  --color-canvas-subtle: var(--bg-3);
   --color-border-default: #d0d7de;
   --color-border-muted: hsla(210, 18%, 87%, 1);
   --color-neutral-muted: rgba(175, 184, 193, 0.2);
@@ -285,6 +285,8 @@
 .markdown-body [type=reset],
 .markdown-body [type=submit] {
   -webkit-appearance: button;
+  -moz-appearance: none;
+       appearance: none;
 }
 
 .markdown-body [type=checkbox],

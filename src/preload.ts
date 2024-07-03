@@ -51,6 +51,9 @@ contextBridge.exposeInMainWorld(
         setEditorSetting: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on("setEditorSetting", message);
         },
+        formatEditor: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on("formatEditor", message);
+        },
         onRequest: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on(channel, callback);
         },

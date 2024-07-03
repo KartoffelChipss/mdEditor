@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions, clipboard, shell } from "electron";
-import { createWindow, getAllWindows, getPath, openFileInWindow, setPath } from "./windowManager";
+import { createWindow, getAllWindows, getFocusedWindow, getPath, openFileInWindow, setPath } from "./windowManager";
 import { openFile } from "./main";
 import { showSaveFileDialog } from "./dialog";
 import path, { basename } from "path";
@@ -113,8 +113,7 @@ export function updateMenu() {
             label: file.name.split(".")[0],
             click: () => {
                 createWindow(file.path);
-            },
-            accelerator: `CmdOrCtrl+${index + 1}`,
+            }
         }
     });
 
@@ -254,11 +253,150 @@ export function updateMenu() {
             { role: 'selectAll' }
         ]
     };
+
+    const formatMenu: MenuItemConstructorOptions = {
+        label: "Format",
+        submenu: [
+            {
+                label: "Headers",
+                submenu: [
+                    {
+                        label: "Heading 1",
+                        accelerator: "CmdOrCtrl+1",
+                        click: () => {
+                            getFocusedWindow()?.webContents.send("formatEditor", "h1");
+                        }
+                    },
+                    {
+                        label: "Heading 2",
+                        accelerator: "CmdOrCtrl+2",
+                        click: () => {
+                            getFocusedWindow()?.webContents.send("formatEditor", "h2");
+                        }
+                    },
+                    {
+                        label: "Heading 3",
+                        accelerator: "CmdOrCtrl+3",
+                        click: () => {
+                            getFocusedWindow()?.webContents.send("formatEditor", "h3");
+                        }
+                    },
+                    {
+                        label: "Heading 4",
+                        accelerator: "CmdOrCtrl+4",
+                        click: () => {
+                            getFocusedWindow()?.webContents.send("formatEditor", "h4");
+                        }
+                    },
+                    {
+                        label: "Heading 5",
+                        accelerator: "CmdOrCtrl+5",
+                        click: () => {
+                            getFocusedWindow()?.webContents.send("formatEditor", "h5");
+                        }
+                    },
+                    {
+                        label: "Heading 6",
+                        accelerator: "CmdOrCtrl+6",
+                        click: () => {
+                            getFocusedWindow()?.webContents.send("formatEditor", "h6");
+                        }
+                    },
+                ]
+            },
+            { type: 'separator' },
+            {
+                label: "Bold",
+                accelerator: "CmdOrCtrl+B",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "bold");
+                }
+            },
+            {
+                label: "Italic",
+                accelerator: "CmdOrCtrl+I",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "italic");
+                }
+            },
+            {
+                label: "Underline",
+                accelerator: "Ctrl+CmdOrCtrl+U",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "underline");
+                }
+            },
+            {
+                label: "Strikethrough",
+                accelerator: "Ctrl+CmdOrCtrl+S",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "strikethrough");
+                }
+            },
+            { type: 'separator' },
+            {
+                label: "List",
+                accelerator: "Ctrl+CmdOrCtrl+L",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "ul");
+                }
+            },
+            {
+                label: "Ordered List",
+                accelerator: "Ctrl+CmdOrCtrl+O",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "ol");
+                }
+            },
+            {
+                label: "Todo",
+                accelerator: "Ctrl+CmdOrCtrl+T",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "todo");
+                }
+            },
+            { type: 'separator' },
+            {
+                label: "Quote",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "quote");
+                }
+            },
+            {
+                label: "Horizontal Rule",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "hr");
+                }
+            },
+            {
+                label: "Table",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "table");
+                }
+            },
+            { type: 'separator' },
+            {
+                label: "Code",
+                accelerator: "Ctrl+CmdOrCtrl+C",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "inline-code");
+                }
+            },
+            {
+                label: "Code Block",
+                accelerator: "CmdOrCtrl+Shift+C",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "code");
+                }
+            },
+        ]
+    };
     
     const appMenuTemplate: MenuItemConstructorOptions[] = [
         isMac ? appMenuItem : {},
         fileMenu,
         editMenu,
+        formatMenu,
         {
             label: 'View',
             submenu: [
