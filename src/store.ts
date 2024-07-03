@@ -48,6 +48,10 @@ const store = new Store({
         lineWrapping: {
             type: 'boolean',
             default: true,
+        },
+        styleActiveLine: {
+            type: 'boolean',
+            default: true,
         }
     }
 });

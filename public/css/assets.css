@@ -29,6 +29,7 @@ body {
   min-height: calc(100vh - var(--nav-height));
   padding: 0px;
   margin: 0px;
+  overflow: hidden;
 }
 
 header {

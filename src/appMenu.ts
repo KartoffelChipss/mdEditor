@@ -1,5 +1,5 @@
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions, clipboard, shell } from "electron";
-import { createWindow, getPath, openFileInWindow, setPath } from "./windowManager";
+import { createWindow, getAllWindows, getPath, openFileInWindow, setPath } from "./windowManager";
 import { openFile } from "./main";
 import { showSaveFileDialog } from "./dialog";
 import path, { basename } from "path";
@@ -62,8 +62,10 @@ export function updateMenu() {
                                 type: "checkbox",
                                 checked: store.get("lineNumbers") as boolean,
                                 click: () => {
-                                    console.log("Line Numbers");
                                     store.set("lineNumbers", !store.get("lineNumbers"));
+                                    for (const window of getAllWindows()) {
+                                        window?.webContents.send("setEditorSetting", "lineNumbers", store.get("lineNumbers"));
+                                    }
                                     updateMenu();
                                 }
                             },
@@ -72,8 +74,22 @@ export function updateMenu() {
                                 type: "checkbox",
                                 checked: store.get("lineWrapping") as boolean,
                                 click: () => {
-                                    console.log("Line Wrapping");
                                     store.set("lineWrapping", !store.get("lineWrapping"));
+                                    for (const window of getAllWindows()) {
+                                        window?.webContents.send("setEditorSetting", "lineWrapping", store.get("lineWrapping"));
+                                    }
+                                    updateMenu();
+                                }
+                            },
+                            {
+                                label: "Active Line Indicator",
+                                type: "checkbox",
+                                checked: store.get("styleActiveLine") as boolean,
+                                click: () => {
+                                    store.set("styleActiveLine", !store.get("styleActiveLine"));
+                                    for (const window of getAllWindows()) {
+                                        window?.webContents.send("setEditorSetting", "styleActiveLine", store.get("styleActiveLine"));
+                                    }
                                     updateMenu();
                                 }
                             }

@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld(
                 "saveFile",
                 "convertMDtoHTML",
                 "getTheme",
+                "getEditorSettings",
             ];
             if (validChannels.includes(channel)) {
                 return ipcRenderer.invoke(channel, data);
@@ -46,6 +47,9 @@ contextBridge.exposeInMainWorld(
         },
         setTheme: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on("setTheme", message);
+        },
+        setEditorSetting: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on("setEditorSetting", message);
         },
         onRequest: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on(channel, callback);

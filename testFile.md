@@ -16,7 +16,6 @@ Go to the [Releases](https://github.com/KartoffelChipss/mdEditor/releases), down
 You need to have Node.js, npm and git installed.
 
 Clone this repository:
-
 ```
 git clone https://github.com/KartoffelChipss/mdEditor
 ```

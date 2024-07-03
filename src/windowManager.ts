@@ -39,6 +39,8 @@ export function createWindow(filePath: string | null = null) {
     logger.info("Opening window for file:", filePath);
 
     const mainWindow = new BrowserWindow({
+        minWidth: 400,
+        minHeight: 45,
         width: getStore().get("windowPosition.width") ?? 1300,
         height: getStore().get("windowPosition.height") ?? 800,
         backgroundColor: "#101215",

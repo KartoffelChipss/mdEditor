@@ -4,7 +4,7 @@ import { createWindow, getPath } from './windowManager';
 import fs from 'fs';
 import { showOpenFileDialog } from "./dialog";
 import { updateMenu } from './appMenu';
-import { addRecentFile } from "./store";
+import { addRecentFile, getStore } from "./store";
 import mdConverter from './mdConverter';
 import path from 'path';
 import 'dotenv/config';
@@ -66,6 +66,14 @@ app.on('ready', () => {
 
         logger.info("Reveal in Finder:", fullPath);
         shell.showItemInFolder(fullPath);
+    });
+
+    ipcMain.handle("getEditorSettings", (event, data) => {
+        return {
+            lineNumbers: getStore().get("lineNumbers"),
+            lineWrapping: getStore().get("lineWrapping"),
+            styleActiveLine: getStore().get("styleActiveLine"),
+        }
     });
 
     app.setAboutPanelOptions({
