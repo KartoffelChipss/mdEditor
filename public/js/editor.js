@@ -8,6 +8,15 @@ const editor = CodeMirror.fromTextArea(document.getElementById('editorTextarea')
     extraKeys: { 'Enter': 'newlineAndIndentContinueMarkdownList' } // Enable list continuation
 });
 
+editor.on('contextmenu', function (editor, event) {
+    event.preventDefault();
+
+    const line = editor.lineAtHeight(event.y);
+    const lineNumber = line + 1;
+
+    window.api.invoke("showContextMenu", lineNumber, event.x, event.y);
+});
+
 window.bridge.setEditorSetting((event, setting, value) => {
     editor.setOption(setting, value);
 });
@@ -20,6 +29,15 @@ window.api.invoke("getEditorSettings").then((settings) => {
 
 window.bridge.formatEditor((event, format) => {
     switch (format) {
+        case "copy":
+            copySelection();
+            break;
+        case "cut":
+            cutSelection();
+            break;
+        case "paste":
+            pasteClipboard();
+            break;
         case "code":
             insertCodeBlock(editor);
             break;
@@ -201,5 +219,24 @@ function insertMathBlock(cm) {
         let mathBlock = "\n$$\n\n$$\n";
         cm.replaceRange(mathBlock, cursor);
         cm.setCursor(cursor.line + 2, 0);
+    });
+}
+
+function copySelection() {
+    const selection = editor.getSelection();
+    navigator.clipboard.writeText(selection);
+}
+
+function cutSelection() {
+    const selection = editor.getSelection();
+    navigator.clipboard.writeText(selection);
+    editor.replaceSelection("");
+    editor.focus();
+}
+
+function pasteClipboard() {
+    navigator.clipboard.readText().then((text) => {
+        editor.replaceSelection(text);
+        editor.focus();
     });
 }

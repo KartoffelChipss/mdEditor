@@ -1,6 +1,6 @@
-import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage } from 'electron';
+import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage, Menu, MenuItemConstructorOptions } from 'electron';
 import logger from 'electron-log/main';
-import { createWindow, getPath, setPath } from './windowManager';
+import { createWindow, getFocusedWindow, getPath, setPath } from './windowManager';
 import fs from 'fs';
 import { showOpenFileDialog } from "./dialog";
 import { updateMenu } from './appMenu';
@@ -83,6 +83,73 @@ app.on('ready', () => {
             lineWrapping: getStore().get("lineWrapping"),
             styleActiveLine: getStore().get("styleActiveLine"),
         }
+    });
+
+    ipcMain.handle("showContextMenu", (event, data) => {
+        const appMenuItem: MenuItemConstructorOptions[] = [
+            {
+                label: "Cut",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "cut");
+                }
+            },
+            {
+                label: "Copy",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "copy");
+                }
+            },
+            {
+                label: "Paste",
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "paste");
+                }
+            },
+            { type: "separator" },
+            {
+                label: "Bold",
+                accelerator: "CmdOrCtrl+B",
+                enabled: getFocusedWindow() ? true : false,
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "bold");
+                }
+            },
+            {
+                label: "Italic",
+                accelerator: "CmdOrCtrl+I",
+                enabled: getFocusedWindow() ? true : false,
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "italic");
+                }
+            },
+            {
+                label: "Underline",
+                accelerator: "Ctrl+CmdOrCtrl+U",
+                enabled: getFocusedWindow() ? true : false,
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "underline");
+                }
+            },
+            {
+                label: "Strikethrough",
+                accelerator: "Ctrl+CmdOrCtrl+S",
+                enabled: getFocusedWindow() ? true : false,
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "strikethrough");
+                }
+            },
+            {
+                label: "Code",
+                accelerator: "Ctrl+CmdOrCtrl+C",
+                enabled: getFocusedWindow() ? true : false,
+                click: () => {
+                    getFocusedWindow()?.webContents.send("formatEditor", "inline-code");
+                }
+            },
+        ];
+        
+        const menu = Menu.buildFromTemplate(appMenuItem);
+        menu.popup();
     });
 
     app.setAboutPanelOptions({

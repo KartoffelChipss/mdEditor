@@ -26,6 +26,7 @@ contextBridge.exposeInMainWorld(
                 "convertMDtoHTML",
                 "getTheme",
                 "getEditorSettings",
+                "showContextMenu",
             ];
             if (validChannels.includes(channel)) {
                 return ipcRenderer.invoke(channel, data);
