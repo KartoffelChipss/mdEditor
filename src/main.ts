@@ -18,7 +18,7 @@ if (devMode) {
     console.log("====== ======\n");
 }
 
-const appRoot = path.join(`${app.getPath("appData") ?? "."}${path.sep}.mdEdit`);
+export const appRoot: string = path.join(`${app.getPath("appData") ?? "."}${path.sep}.mdEdit`);
 if (!fs.existsSync(appRoot)) fs.mkdirSync(appRoot, { recursive: true });
 
 logger.transports.file.resolvePathFn = () => path.join(appRoot, "logs.log");

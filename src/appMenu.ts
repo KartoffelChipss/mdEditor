@@ -1,6 +1,6 @@
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions, clipboard, shell } from "electron";
 import { createWindow, getAllWindows, getFocusedWindow, getPath, openFileInWindow, setPath } from "./windowManager";
-import { openFile } from "./main";
+import { openFile, appRoot } from "./main";
 import { showSaveFileDialog } from "./dialog";
 import path, { basename } from "path";
 import { addRecentFile, clearRecentFiles, getRecentFiles, getStore } from "./store";
@@ -16,7 +16,10 @@ export function updateMenu() {
     const appMenuItem: MenuItemConstructorOptions = {
         label: app.name,
         submenu: [
-            { role: 'about' },
+            { 
+                role: 'about',
+                label: 'About mdEditor'
+            },
             { type: 'separator' },
             {
                 label: "Preferences",
@@ -99,12 +102,34 @@ export function updateMenu() {
             },
             { type: 'separator' },
             { role: 'services' },
+            {
+                label: "Developer",
+                submenu: [
+                    { role: 'toggleDevTools' },
+                    { role: 'forceReload' },
+                    {
+                        label: "Open app folder",
+                        click: () => {
+                            shell.openPath(appRoot);
+                        }
+                    },
+                    {
+                        label: "Open config file",
+                        click: () => {
+                            store.openInEditor();
+                        }
+                    },
+                ]
+            },
             { type: 'separator' },
             { role: 'hide' },
             { role: 'hideOthers' },
             { role: 'unhide' },
             { type: 'separator' },
-            { role: 'quit' }
+            {
+                role: 'quit',
+                label: 'Quit mdEditor'
+            }
         ]
     };
     
@@ -415,22 +440,6 @@ export function updateMenu() {
                         }
                     }
                 },
-                // {
-                //     label: 'Force Reload',
-                //     accelerator: 'CmdOrCtrl+Shift+R',
-                //     enabled: focusedWindow ? true : false,
-                //     click: async () => {
-                //         const focusedWindow = BrowserWindow.getFocusedWindow();
-                //         if (focusedWindow) {
-                //             focusedWindow.reload();
-                //             setTimeout(() => {
-                //                 const filePath = getPath(focusedWindow);
-                //                 if (filePath) openFileInWindow(filePath, focusedWindow);
-                //             }, 100);
-                //         }
-                //     }
-                // },
-                { role: 'toggleDevTools' },
                 { type: 'separator' },
                 { role: 'resetZoom' },
                 { role: 'zoomIn' },
