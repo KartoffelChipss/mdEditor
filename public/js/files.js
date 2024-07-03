@@ -45,9 +45,15 @@ window.bridge.requestFileSave((event, path, name) => {
     window.api.invoke("saveFile", {
         file: mdFile,
         path: path,
-        name: name
-    });
-    originalContent = mdFile.content;
+        name: name,
+        content: editor.getValue(),
+    }).then(file => {
+        file.content = editor.getValue();
+        setFilename(file.name);
+        setFileEdited(false);
+        mdFile = file;
+    })
+    originalContent = editor.getValue();
     setFilename(name);
     setFileEdited(false);
 });

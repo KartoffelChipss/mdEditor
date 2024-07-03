@@ -1,12 +1,12 @@
 import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage } from 'electron';
 import logger from 'electron-log/main';
-import { createWindow, getPath } from './windowManager';
+import { createWindow, getPath, setPath } from './windowManager';
 import fs from 'fs';
 import { showOpenFileDialog } from "./dialog";
 import { updateMenu } from './appMenu';
 import { addRecentFile, getStore } from "./store";
 import mdConverter from './mdConverter';
-import path from 'path';
+import path, { basename } from 'path';
 import 'dotenv/config';
 import { getCalculatedTheme, getTheme, updateTheme } from './theme';
 
@@ -48,7 +48,16 @@ app.on('ready', () => {
 
     ipcMain.handle("saveFile", async (event, data) => {
         logger.info("Saving file:", data.file + " to " + data.path);
-        fs.writeFileSync(data.path, data.file.content);
+        fs.writeFileSync(data.path, data.content);
+
+        const window = BrowserWindow.fromWebContents(event.sender);
+        if (window) setPath(window, data.path);
+
+        return {
+            content: data.content,
+            name: basename(data.path),
+            path: data.path,
+        }
     });
 
     ipcMain.handle("convertMDtoHTML", (event, data) => {
