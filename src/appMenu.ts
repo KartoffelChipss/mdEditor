@@ -288,6 +288,7 @@ export function updateMenu() {
                     {
                         label: "Heading 1",
                         accelerator: "CmdOrCtrl+1",
+                        enabled: focusedWindow ? true : false,
                         click: () => {
                             getFocusedWindow()?.webContents.send("formatEditor", "h1");
                         }
@@ -295,6 +296,7 @@ export function updateMenu() {
                     {
                         label: "Heading 2",
                         accelerator: "CmdOrCtrl+2",
+                        enabled: focusedWindow ? true : false,
                         click: () => {
                             getFocusedWindow()?.webContents.send("formatEditor", "h2");
                         }
@@ -302,6 +304,7 @@ export function updateMenu() {
                     {
                         label: "Heading 3",
                         accelerator: "CmdOrCtrl+3",
+                        enabled: focusedWindow ? true : false,
                         click: () => {
                             getFocusedWindow()?.webContents.send("formatEditor", "h3");
                         }
@@ -309,6 +312,7 @@ export function updateMenu() {
                     {
                         label: "Heading 4",
                         accelerator: "CmdOrCtrl+4",
+                        enabled: focusedWindow ? true : false,
                         click: () => {
                             getFocusedWindow()?.webContents.send("formatEditor", "h4");
                         }
@@ -316,6 +320,7 @@ export function updateMenu() {
                     {
                         label: "Heading 5",
                         accelerator: "CmdOrCtrl+5",
+                        enabled: focusedWindow ? true : false,
                         click: () => {
                             getFocusedWindow()?.webContents.send("formatEditor", "h5");
                         }
@@ -323,6 +328,7 @@ export function updateMenu() {
                     {
                         label: "Heading 6",
                         accelerator: "CmdOrCtrl+6",
+                        enabled: focusedWindow ? true : false,
                         click: () => {
                             getFocusedWindow()?.webContents.send("formatEditor", "h6");
                         }
@@ -333,6 +339,7 @@ export function updateMenu() {
             {
                 label: "Bold",
                 accelerator: "CmdOrCtrl+B",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "bold");
                 }
@@ -340,6 +347,7 @@ export function updateMenu() {
             {
                 label: "Italic",
                 accelerator: "CmdOrCtrl+I",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "italic");
                 }
@@ -347,6 +355,7 @@ export function updateMenu() {
             {
                 label: "Underline",
                 accelerator: "Ctrl+CmdOrCtrl+U",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "underline");
                 }
@@ -354,6 +363,7 @@ export function updateMenu() {
             {
                 label: "Strikethrough",
                 accelerator: "Ctrl+CmdOrCtrl+S",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "strikethrough");
                 }
@@ -362,6 +372,7 @@ export function updateMenu() {
             {
                 label: "List",
                 accelerator: "Ctrl+CmdOrCtrl+L",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "ul");
                 }
@@ -369,6 +380,7 @@ export function updateMenu() {
             {
                 label: "Ordered List",
                 accelerator: "Ctrl+CmdOrCtrl+O",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "ol");
                 }
@@ -376,6 +388,7 @@ export function updateMenu() {
             {
                 label: "Todo",
                 accelerator: "Ctrl+CmdOrCtrl+T",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "todo");
                 }
@@ -383,18 +396,21 @@ export function updateMenu() {
             { type: 'separator' },
             {
                 label: "Quote",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "quote");
                 }
             },
             {
                 label: "Horizontal Rule",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "hr");
                 }
             },
             {
                 label: "Table",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "table");
                 }
@@ -403,6 +419,7 @@ export function updateMenu() {
             {
                 label: "Code",
                 accelerator: "Ctrl+CmdOrCtrl+C",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "inline-code");
                 }
@@ -410,6 +427,7 @@ export function updateMenu() {
             {
                 label: "Code Block",
                 accelerator: "CmdOrCtrl+Shift+C",
+                enabled: focusedWindow ? true : false,
                 click: () => {
                     getFocusedWindow()?.webContents.send("formatEditor", "code");
                 }
