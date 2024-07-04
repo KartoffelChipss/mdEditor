@@ -5,9 +5,12 @@
   <p align="center" >Simple Markdown Editor for MacOS</p>
 </p> 
 
+app
+
 ## Installation
 
-### Easy way:
+### 
+away:
 
 Go to the [Releases](https://github.com/KartoffelChipss/mdEditor/releases), download the latest installer for your OS and install it.
 
@@ -21,6 +24,8 @@ git clone https://github.com/KartoffelChipss/mdEditor
 ```
 
 Move to the apps directory, install all dependencies and start the app:
+
+app
 
 ```
 cd mdEditor
@@ -37,3 +42,5 @@ If you want to build an installer yourself use one of the following commands:
 ## License
 
 [GNU General Public License v3.0](https://github.com/KartoffelChipss/rp-manager-discord/blob/main/LICENSE)
+
+app,

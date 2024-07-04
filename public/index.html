@@ -29,6 +29,20 @@
         </div>
     </header>
 
+    <div class="searchbox" id="searchbox">
+        <input type="text" id="search" class="search" placeholder="Search" oninput="findAll()">
+        <span><span id="search-current-result">0</span>/<span id="search-result-count">0</span></span>
+        <button type="button" class="search-prev-btn" onclick="findPrev()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 6V18M12 6L7 11M12 6L17 11" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </button>
+        <button type="button" class="search-next-btn" onclick="findNext()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 6V18M12 18L7 13M12 18L17 13" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </button>
+        <button type="button" class="search-close" onclick="closeSearch()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M6 6L18 18M18 6L6 18" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+        </button>
+    </div>
+
     <div class="sections">
         <section id="editor" class="editor active" style="width: 100%;">
             <textarea id="editorTextarea" class="editorTextarea"></textarea>
@@ -44,10 +58,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/closetag.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/selection/active-line.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/search/search.min.js" integrity="sha512-Mw3RqCUHTyvN3iSp5TSs731TiLqnKrxzyy2UVZv3+tJa524Rj7pBC7Ivv3ka2oDnkQwLOMHNDKU5nMJ16YRgrA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/search/searchcursor.min.js" integrity="sha512-+ZfZDC9gi1y9Xoxi9UUsSp+5k+AcFE0TRNjI0pfaAHQ7VZTaaoEpBZp9q9OvHdSomOze/7s5w27rcsYpT6xU6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/search/match-highlighter.min.js" integrity="sha512-94h/nzerPpLt9vsOyZmNNemwyUESYD/Tnuem6b67+RQMETNFhH8pTCHLDZkGNhzEbmKO0AidJgS0aYH1mH9YfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/addon/search/jump-to-line.min.js" integrity="sha512-cFdaiExVrVnsHaQhcn3wR9zyndnXI6w7diUSonYbGoV6v/PgBEGZevVC4gvg+Jz5yfO3K0/r1ZMk3+IcdEl+pQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="js/editor.js"></script>
     <script src="js/files.js"></script>
     <script src="js/preview.js"></script>
     <script src="js/theme.js"></script>
+    <script src="js/search.js"></script>
     <script src="js/main.js"></script>
 </body>
 

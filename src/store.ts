@@ -52,7 +52,16 @@ const store = new Store({
         styleActiveLine: {
             type: 'boolean',
             default: true,
-        }
+        },
+        indentSize: {
+            type: 'number',
+            default: 4,
+        },
+        indentType: {
+            type: 'string',
+            enum: ['space', 'tab'],
+            default: 'tab',
+        },
     }
 });
 

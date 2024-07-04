@@ -5,7 +5,11 @@ const editor = CodeMirror.fromTextArea(document.getElementById('editorTextarea')
     styleActiveLine: true,
     matchBrackets: true,
     theme: "mdedit",
-    extraKeys: { 'Enter': 'newlineAndIndentContinueMarkdownList' } // Enable list continuation
+    extraKeys: { 'Enter': 'newlineAndIndentContinueMarkdownList' }, // Enable list continuation
+    extraKeys: {
+        "Cmd-F": false,
+        "Ctrl-F": false,
+    },
 });
 
 editor.on('contextmenu', function (editor, event) {
@@ -17,13 +21,19 @@ editor.on('contextmenu', function (editor, event) {
     window.api.invoke("showContextMenu", lineNumber, event.x, event.y);
 });
 
-window.bridge.setEditorSetting((event, setting, value) => {
+function setSetting(setting, value) {
+    console.log("Setting ", setting, " to ", value);
+
     editor.setOption(setting, value);
+}
+
+window.bridge.setEditorSetting((event, setting, value) => {
+    setSetting(setting, value);
 });
 
 window.api.invoke("getEditorSettings").then((settings) => {
     for (const setting in settings) {
-        editor.setOption(setting, settings[setting]);
+        setSetting(setting, settings[setting]);
     }
 });
 

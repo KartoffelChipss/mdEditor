@@ -3,7 +3,7 @@ import logger from "electron-log";
 import path from "path";
 import { getStore } from "./store";
 import fs from "fs";
-import { updateMenu } from "./appMenu";
+import { updateMenu } from "./menus/appMenu";
 import { updateTheme } from "./theme";
 
 const windows: { [key: string]: BrowserWindow } = {};

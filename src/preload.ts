@@ -55,6 +55,9 @@ contextBridge.exposeInMainWorld(
         formatEditor: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on("formatEditor", message);
         },
+        openSearch: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on("openSearch", message);
+        },
         onRequest: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on(channel, callback);
         },

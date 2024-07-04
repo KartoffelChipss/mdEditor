@@ -1,10 +1,10 @@
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions, clipboard, shell } from "electron";
-import { createWindow, getAllWindows, getFocusedWindow, getPath, openFileInWindow, setPath } from "./windowManager";
-import { openFile, appRoot } from "./main";
-import { showSaveFileDialog } from "./dialog";
+import { createWindow, getAllWindows, getFocusedWindow, getPath, openFileInWindow, setPath } from "../windowManager";
+import { openFile, appRoot } from "../main";
+import { showSaveFileDialog } from "../dialog";
 import path, { basename } from "path";
-import { addRecentFile, clearRecentFiles, getRecentFiles, getStore } from "./store";
-import { setTheme } from "./theme";
+import { addRecentFile, clearRecentFiles, getRecentFiles, getStore } from "../store";
+import { setTheme } from "../theme";
 
 const isMac = process.platform === "darwin";
 
@@ -25,38 +25,6 @@ export function updateMenu() {
                 label: "Preferences",
                 accelerator: "CmdOrCtrl+,",
                 submenu: [
-                    {
-                        label: "Theme",
-                        submenu: [
-                            {
-                                label: "System",
-                                type: "radio",
-                                checked: store.get("theme") === "system",
-                                click: () => {
-                                    setTheme("system");
-                                    updateMenu();
-                                }
-                            },
-                            {
-                                label: "Dark",
-                                type: "radio",
-                                checked: store.get("theme") === "dark",
-                                click: () => {
-                                    setTheme("dark");
-                                    updateMenu();
-                                }
-                            },
-                            {
-                                label: "Light",
-                                type: "radio",
-                                checked: store.get("theme") === "light",
-                                click: () => {
-                                    setTheme("light");
-                                    updateMenu();
-                                }
-                            }
-                        ]
-                    },
                     {
                         label: "Editor",
                         submenu: [
@@ -97,7 +65,39 @@ export function updateMenu() {
                                 }
                             }
                         ]
-                    }
+                    },
+                    {
+                        label: "Theme",
+                        submenu: [
+                            {
+                                label: "System",
+                                type: "radio",
+                                checked: store.get("theme") === "system",
+                                click: () => {
+                                    setTheme("system");
+                                    updateMenu();
+                                }
+                            },
+                            {
+                                label: "Dark",
+                                type: "radio",
+                                checked: store.get("theme") === "dark",
+                                click: () => {
+                                    setTheme("dark");
+                                    updateMenu();
+                                }
+                            },
+                            {
+                                label: "Light",
+                                type: "radio",
+                                checked: store.get("theme") === "light",
+                                click: () => {
+                                    setTheme("light");
+                                    updateMenu();
+                                }
+                            }
+                        ]
+                    },
                 ]
             },
             { type: 'separator' },
@@ -275,7 +275,16 @@ export function updateMenu() {
             { role: 'paste' },
             { role: 'pasteAndMatchStyle' },
             { role: 'delete' },
-            { role: 'selectAll' }
+            { role: 'selectAll' },
+            { type: 'separator' },
+            {
+                label: 'Find',
+                accelerator: 'CmdOrCtrl+F',
+                enabled: focusedWindow ? true : false,
+                click: () => {
+                    getFocusedWindow()?.webContents.send("openSearch");
+                }
+            },
         ]
     };
 
