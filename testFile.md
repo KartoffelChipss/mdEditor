@@ -9,8 +9,7 @@ app
 
 ## Installation
 
-### 
-away:
+### away:
 
 Go to the [Releases](https://github.com/KartoffelChipss/mdEditor/releases), download the latest installer for your OS and install it.
 
