@@ -1,6 +1,6 @@
-import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage, Menu, MenuItemConstructorOptions } from 'electron';
+import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage, protocol } from 'electron';
 import logger from 'electron-log/main';
-import { createWindow, getFocusedWindow, getPath, setPath } from './windowManager';
+import { createWindow, setPath } from './windowManager';
 import fs from 'fs';
 import { showOpenFileDialog } from "./dialog";
 import { updateMenu } from './menus/appMenu';
@@ -8,7 +8,7 @@ import { addRecentFile, getStore } from "./store";
 import mdConverter from './mdConverter';
 import path, { basename } from 'path';
 import 'dotenv/config';
-import { getCalculatedTheme, getTheme, updateTheme } from './theme';
+import { getCalculatedTheme, updateTheme } from './theme';
 import { popUpContextMenu } from './menus/contextMenu';
 
 const devMode = process.env.NODE_ENV === 'development';
@@ -29,10 +29,14 @@ const iconPath = path.resolve(path.join(__dirname + "/../public/img/logo.png"));
 
 let fileDialogOpen = false;
 
+protocol.registerSchemesAsPrivileged([
+    { scheme: "mdeditor", privileges: { standard: true, secure: true, supportFetchAPI: true } }
+]);
+
 app.on('ready', () => {
     let initialFile: string | null = null;
     let openedInitialFile = false;
-    if (devMode && process.argv.length >= 2 ) initialFile = process.argv[2];
+    if (devMode && process.argv.length >= 2) initialFile = process.argv[2];
     if (!devMode && process.argv.length >= 2) initialFile = process.argv[1];
 
     if (process.platform === "darwin") app.dock.setIcon(nativeImage.createFromPath(iconPath));
@@ -111,7 +115,7 @@ app.on('ready', () => {
         event.preventDefault();
 
         logger.info("Opening file:", filePath);
-    
+
         createWindow(filePath);
         addRecentFile(filePath);
     });

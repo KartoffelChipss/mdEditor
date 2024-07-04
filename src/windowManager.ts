@@ -92,9 +92,31 @@ export function createWindow(filePath: string | null = null) {
                 content: data,
             });
             mainWindow.show();
+            mainWindow.setOpacity(0);
+
+            let opacity = 0;
+            const interval = setInterval(() => {
+                opacity += 0.3;
+                mainWindow.setOpacity(opacity);
+
+                if (opacity >= 1) {
+                    clearInterval(interval);
+                }
+            }, 50);
         });
     } else {
         mainWindow.show();
+        mainWindow.setOpacity(0);
+
+        let opacity = 0;
+        const interval = setInterval(() => {
+            opacity += 0.3;
+            mainWindow.setOpacity(opacity);
+
+            if (opacity >= 1) {
+                clearInterval(interval);
+            }
+        }, 50);
     }
 }
 

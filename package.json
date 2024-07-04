@@ -27,10 +27,19 @@
     },
     "mac": {
       "target": "dmg",
-      "category": "public.app-category.developer-tools",
+      "category": "public.app-category.utilities",
       "icon": "public/img/logo.icns",
       "extendInfo": {
-        "NSHumanReadableCopyright": "© 2024 Jan Straßburger"
+        "NSHumanReadableCopyright": "© 2024 Jan Straßburger",
+        "CFBundleDocumentTypes": [
+          {
+            "name": "Markdown Document",
+            "role": "Editor",
+            "ostypes": ["public.data", "public.content"],
+            "extensions": ["md", "markdown"],
+            "iconFile": "public/img/logo.icns"
+          }
+        ]
       }
     },
     "fileAssociations": [
@@ -43,6 +52,12 @@
         "role": "Editor"
       }
     ]
+  },
+  "protocols": {
+    "mdeditor": {
+      "name": "mdeditor",
+      "role": "Editor for Markdown files"
+    }
   },
   "devDependencies": {
     "@types/node": "^18.0.0",
