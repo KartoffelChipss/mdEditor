@@ -1,6 +1,7 @@
 const root = document.querySelector(":root");
 
 function setProperty(name, value) {
+    console.log("Setting property: ", name, " to ", value);
     root.style.setProperty(name, value);
 }
 

@@ -2,7 +2,6 @@ let searchMatches = [];
 let currentIndex = -1;
 
 window.bridge.openSearch((event, data) => {
-    console.log("Opening search");
     openSearch();
 });
 

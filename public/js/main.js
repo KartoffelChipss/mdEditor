@@ -32,3 +32,42 @@ window.bridge.fullscreenChanged((e, fullscreen) => {
     if (fullscreen) document.querySelector("header").classList.add('fullscreen');
     else document.querySelector("header").classList.remove('fullscreen');
 });
+
+function setProperty(name, value) {
+    console.log("Setting property: ", name, " to ", value);
+    root.style.setProperty(name, value);
+}
+
+const fontSizesEditor= [10, 12, 15, 16, 18, 20, 22, 24, 26];
+const fontSizesPreview = [12, 14, 16, 18, 20, 22, 24, 26, 28];
+
+let fontSizeIndexEditor = 2;
+let fontSizeIndexPreview = 2;
+
+function updateFontSize() {
+    setProperty('--font-size-editor', `${fontSizesEditor[fontSizeIndexEditor]}px`);
+    setProperty('--font-size-preview', `${fontSizesPreview[fontSizeIndexPreview]}px`);
+}
+
+window.bridge.changeZoom((e, data) => {
+    console.log("Changing zoom: ", data);
+    if (!data || !data.instruction) return;
+
+    switch (data.instruction) {
+        case "reset":
+            fontSizeIndexEditor = 2;
+            fontSizeIndexPreview = 2;
+            updateFontSize();
+            break;
+        case "increase":
+            fontSizeIndexEditor = Math.min(fontSizeIndexEditor + 1, fontSizesEditor.length - 1);
+            fontSizeIndexPreview = Math.min(fontSizeIndexPreview + 1, fontSizesPreview.length - 1);
+            updateFontSize();
+            break;
+        case "decrease":
+            fontSizeIndexEditor = Math.max(fontSizeIndexEditor - 1, 0);
+            fontSizeIndexPreview = Math.max(fontSizeIndexPreview - 1, 0);
+            updateFontSize();
+            break;
+    }
+});

@@ -58,6 +58,9 @@ contextBridge.exposeInMainWorld(
         openSearch: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on("openSearch", message);
         },
+        changeZoom: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on("changeZoom", message);
+        },
         onRequest: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on(channel, callback);
         },

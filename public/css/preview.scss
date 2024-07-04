@@ -141,7 +141,7 @@
     color: var(--color-fg-default);
     background-color: var(--color-canvas-default);
     font-family: var(--system-font);
-    font-size: 16px;
+    font-size: var(--font-size-preview);
     line-height: 1.5;
     word-wrap: break-word;
 }

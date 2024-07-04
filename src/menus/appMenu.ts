@@ -468,9 +468,36 @@ export function updateMenu() {
                     }
                 },
                 { type: 'separator' },
-                { role: 'resetZoom' },
-                { role: 'zoomIn' },
-                { role: 'zoomOut' },
+                { 
+                    label: 'Actual size',
+                    accelerator: 'CmdOrCtrl+0',
+                    click: () => {
+                        getFocusedWindow()?.webContents.send("changeZoom", {
+                            instruction: "reset",
+                            value: 0,
+                        });
+                    }
+                },
+                { 
+                    label: 'Zoom In',
+                    accelerator: 'CmdOrCtrl+Plus',
+                    click: () => {
+                        getFocusedWindow()?.webContents.send("changeZoom", {
+                            instruction: "increase",
+                            value: 0.1,
+                        });
+                    }
+                },
+                {   
+                    label: 'Zoom Out',
+                    accelerator: 'CmdOrCtrl+-',
+                    click: () => {
+                        getFocusedWindow()?.webContents.send("changeZoom", {
+                            instruction: "decrease",
+                            value: 0.1,
+                        });
+                    }
+                },
                 { type: 'separator' },
                 { role: 'togglefullscreen' }
             ]
