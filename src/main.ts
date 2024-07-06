@@ -13,31 +13,35 @@ import { popUpContextMenu } from './menus/contextMenu';
 
 const devMode = process.env.NODE_ENV === 'development';
 
-if (devMode) {
-    console.log("====== ======");
-    console.log("Started in devmode!");
-    console.log("====== ======\n");
-}
+logger.transports.file.resolvePathFn = () => path.join(appRoot, "logs.log");
+logger.transports.file.level = "info";
 
 export const appRoot: string = path.join(`${app.getPath("appData") ?? "."}${path.sep}.mdEdit`);
 if (!fs.existsSync(appRoot)) fs.mkdirSync(appRoot, { recursive: true });
 
-logger.transports.file.resolvePathFn = () => path.join(appRoot, "logs.log");
-logger.transports.file.level = "info";
-
 const iconPath = path.resolve(path.join(__dirname + "/../public/img/logo.png"));
 
 let fileDialogOpen = false;
+let initialFile: string | null = null;
 
 protocol.registerSchemesAsPrivileged([
     { scheme: "mdeditor", privileges: { standard: true, secure: true, supportFetchAPI: true } }
 ]);
 
 app.on('ready', () => {
-    let initialFile: string | null = null;
+    logger.log(" ");
+    logger.log("====== ======");
+    logger.log("App Started!");
+    if (devMode) logger.log("Running in development mode");
+    logger.log("====== ======\n");
+
     let openedInitialFile = false;
-    if (devMode && process.argv.length >= 2) initialFile = process.argv[2];
+    if (devMode && process.argv.length >= 3) initialFile = process.argv[2];
     if (!devMode && process.argv.length >= 2) initialFile = process.argv[1];
+
+    logger.info("Arguments:", process.argv);
+
+    logger.info("Starting mdEditor with initial file:", initialFile);
 
     if (process.platform === "darwin") app.dock.setIcon(nativeImage.createFromPath(iconPath));
 
@@ -111,15 +115,6 @@ app.on('ready', () => {
         openedInitialFile = true;
     }
 
-    app.on('open-file', (event, filePath) => {
-        event.preventDefault();
-
-        logger.info("Opening file:", filePath);
-
-        createWindow(filePath);
-        addRecentFile(filePath);
-    });
-
     app.on('activate', () => {
         // Only open the if there are no windows open and there is no initial file or the initial file was already opened
         if (BrowserWindow.getAllWindows().length === 0 && (!initialFile || openedInitialFile)) openFile();
@@ -128,6 +123,19 @@ app.on('ready', () => {
     updateMenu();
 
     if (!initialFile) openFile();
+});
+
+app.on('open-file', (event, filePath) => {
+    logger.info("Opening file from event:", filePath);
+
+    event.preventDefault();
+
+    if (app.isReady()) {
+        createWindow(filePath);
+        addRecentFile(filePath);
+    } else {
+        initialFile = filePath;
+    }
 });
 
 app.on('window-all-closed', () => {
