@@ -30,6 +30,14 @@ export function getAllWindows(): (BrowserWindow | null)[] {
     return BrowserWindow.getAllWindows();
 }
 
+export function closeWindow(window: BrowserWindow) {
+    const filePath = getPath(window);
+    if (filePath) delete windows[filePath];
+    window.removeAllListeners("close");
+    window.close();
+    updateMenu();
+}
+
 export function createWindow(filePath: string | null = null) {
     if (filePath && windows[filePath]) {
         windows[filePath].focus();
@@ -55,6 +63,7 @@ export function createWindow(filePath: string | null = null) {
             preload: path.join(__dirname, 'preload.js'),
             contextIsolation: true,
             nodeIntegration: false,
+            sandbox: true,
         },
     });
 
@@ -63,9 +72,10 @@ export function createWindow(filePath: string | null = null) {
     mainWindow.on("move", () => getStore().set(`windowPosition`, mainWindow.getBounds()));
     mainWindow.on("resize", () => getStore().set(`windowPosition`, mainWindow.getBounds()));
 
-    mainWindow.on("closed", () => {
-        if (filePath) delete windows[filePath];
-        updateMenu();
+    mainWindow.on("close", (e) => {
+        e.preventDefault();
+
+        mainWindow.webContents.send("closeWindow");
     });
 
     mainWindow.on("enter-full-screen", () => mainWindow.webContents.send("fullscreenChanged", true));

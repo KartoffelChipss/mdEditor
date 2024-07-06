@@ -71,3 +71,13 @@ window.bridge.changeZoom((e, data) => {
             break;
     }
 });
+
+window.bridge.closeWindow((e, data) => {
+    if (mdFile && mdFile.content !== originalContent) {
+        console.log("Unsaved changes detected: ", mdFile);
+        window.api.invoke("showUnsavedChangesDialog", mdFile);
+    } else {
+        console.log("No unsaved changes detected. Closing window.");
+        window.api.invoke("close", {});
+    }
+});

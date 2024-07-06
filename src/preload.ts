@@ -27,6 +27,7 @@ contextBridge.exposeInMainWorld(
                 "getTheme",
                 "getEditorSettings",
                 "showContextMenu",
+                "showUnsavedChangesDialog"
             ];
             if (validChannels.includes(channel)) {
                 return ipcRenderer.invoke(channel, data);
@@ -60,6 +61,9 @@ contextBridge.exposeInMainWorld(
         },
         changeZoom: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on("changeZoom", message);
+        },
+        closeWindow: (message: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
+            ipcRenderer.on("closeWindow", message);
         },
         onRequest: (channel: string, callback: (event: Electron.IpcRendererEvent, ...args: any[]) => void) => {
             ipcRenderer.on(channel, callback);

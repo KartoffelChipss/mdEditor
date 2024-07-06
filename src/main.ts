@@ -1,8 +1,8 @@
-import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage, protocol } from 'electron';
+import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage, protocol, dialog } from 'electron';
 import logger from 'electron-log/main';
-import { createWindow, setPath } from './windowManager';
+import { closeWindow, createWindow, setPath } from './windowManager';
 import fs from 'fs';
-import { showOpenFileDialog } from "./dialog";
+import { showOpenFileDialog, showUnsavedChangesDialog } from "./dialog";
 import { updateMenu } from './menus/appMenu';
 import { addRecentFile, getStore } from "./store";
 import mdConverter from './mdConverter';
@@ -56,16 +56,22 @@ app.on('ready', () => {
     });
 
     ipcMain.handle("saveFile", async (event, data) => {
-        logger.info("Saving file:", data.file + " to " + data.path);
-        fs.writeFileSync(data.path, data.content);
-
-        const window = BrowserWindow.fromWebContents(event.sender);
-        if (window) setPath(window, data.path);
-
-        return {
-            content: data.content,
-            name: basename(data.path),
-            path: data.path,
+        try {
+            logger.info("Saving file:", data.file + " to " + data.path);
+            await fs.promises.writeFile(data.path, data.content);
+    
+            const window = BrowserWindow.fromWebContents(event.sender);
+            if (window) setPath(window, data.path);
+    
+            return {
+                content: data.content,
+                name: basename(data.path),
+                path: data.path,
+            };
+        } catch (error) {
+            logger.error("Error saving file:", error);
+            dialog.showErrorBox("Error saving file", "An error occurred while saving the file. Please try again.");
+            throw error;
         }
     });
 
@@ -96,6 +102,38 @@ app.on('ready', () => {
 
     ipcMain.handle("showContextMenu", (event, data) => {
         popUpContextMenu();
+    });
+
+    ipcMain.handle("showUnsavedChangesDialog", async (event, data) => {
+        const action = await showUnsavedChangesDialog();
+
+        if (action === "save") {
+            try {
+                logger.info("Saving file:", data.file + " to " + data.path);
+                await fs.promises.writeFile(data.path, data.content);
+        
+                const window = BrowserWindow.fromWebContents(event.sender);
+                if (window) closeWindow(window);
+
+            } catch (error) {
+                logger.error("Error saving file:", error);
+                dialog.showErrorBox("Error saving file", "An error occurred while saving the file. Please try again.");
+                throw error;
+            }
+        }
+        
+        if (action === "discard") {
+            const window = BrowserWindow.fromWebContents(event.sender);
+            if (window) closeWindow(window);
+            return;
+        }
+
+        if (action === "cancel") return;
+    });
+
+    ipcMain.handle("close", (event, data) => {
+        const window = BrowserWindow.fromWebContents(event.sender);
+        if (window) closeWindow(window);
     });
 
     app.setAboutPanelOptions({

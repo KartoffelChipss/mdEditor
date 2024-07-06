@@ -37,3 +37,21 @@ export async function showSaveFileDialog(): Promise<string | null> {
 
     return result.filePath;
 }
+
+/**
+ * Show a dialog to ask the user if they want to save their unsaved changes
+ * @returns 'save' if the user wants to save, 'discard' if the user wants to discard, 'cancel' if the user wants to cancel
+ */
+export async function showUnsavedChangesDialog(): Promise<'save' | 'discard' | 'cancel'> {
+    const result = await dialog.showMessageBox({
+        type: 'warning',
+        buttons: ['Save', 'Discard', 'Cancel'],
+        defaultId: 0,
+        title: 'Unsaved changes',
+        message: 'You have unsaved changes. Do you want to save them?',
+    });
+
+    if (result.response == 0) return 'save';
+    else if (result.response == 1) return 'discard';
+    else return 'cancel';
+}
