@@ -1,17 +1,16 @@
-import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage, protocol, dialog } from 'electron';
+import { app, BrowserWindow, nativeTheme, nativeImage, protocol } from 'electron';
 import logger from 'electron-log/main';
-import {closeWindow, createWindow, getAllWindows, requestWindowClose, setPath} from './windowManager';
+import { closeWindow, createWindow, getAllWindows } from './windowManager';
 import fs from 'fs';
-import { showOpenFileDialog, showUnsavedChangesDialog } from "./dialog";
+import { showOpenFileDialog } from "./dialog";
 import { updateMenu } from './menus/appMenu';
-import { addRecentFile, getStore } from "./store";
-import mdConverter from './mdConverter';
-import path, { basename } from 'path';
+import { addRecentFile } from "./store";
+import path from 'path';
 import 'dotenv/config';
-import { getCalculatedTheme, updateTheme } from './theme';
-import { popUpContextMenu } from './menus/contextMenu';
+import { updateTheme } from './theme';
+import './ipcHandler';
 
-const devMode = process.env.NODE_ENV === 'development';
+export const devMode = process.env.NODE_ENV === 'development';
 
 logger.transports.file.resolvePathFn = () => path.join(appRoot, "logs.log");
 logger.transports.file.level = "info";
@@ -49,91 +48,6 @@ app.on('ready', () => {
 
     nativeTheme.on("updated", () => {
         updateTheme();
-    });
-
-    ipcMain.handle("getTheme", (event, data) => {
-        return getCalculatedTheme();
-    });
-
-    ipcMain.handle("saveFile", async (event, data) => {
-        try {
-            logger.info("Saving file:", data.file + " to " + data.path);
-            await fs.promises.writeFile(data.path, data.content);
-    
-            const window = BrowserWindow.fromWebContents(event.sender);
-            if (window) setPath(window, data.path);
-    
-            return {
-                content: data.content,
-                name: basename(data.path),
-                path: data.path,
-            };
-        } catch (error) {
-            logger.error("Error saving file:", error);
-            dialog.showErrorBox("Error saving file", "An error occurred while saving the file. Please try again.");
-            throw error;
-        }
-    });
-
-    ipcMain.handle("convertMDtoHTML", (event, data) => {
-        return mdConverter.makeHtml(data);
-    });
-
-    ipcMain.handle("openLink", (event, data) => {
-        logger.info("Opening link:", data);
-        shell.openExternal(data);
-    });
-
-    ipcMain.handle("openLinkInFinder", (event, data) => {
-        const basePath = path.dirname(data.path);
-        const fullPath = path.resolve(basePath, data.url);
-
-        logger.info("Reveal in Finder:", fullPath);
-        shell.showItemInFolder(fullPath);
-    });
-
-    ipcMain.handle("getEditorSettings", (event, data) => {
-        return {
-            lineNumbers: getStore().get("lineNumbers"),
-            lineWrapping: getStore().get("lineWrapping"),
-            styleActiveLine: getStore().get("styleActiveLine"),
-        }
-    });
-
-    ipcMain.handle("showContextMenu", (event, data) => {
-        popUpContextMenu();
-    });
-
-    ipcMain.handle("showUnsavedChangesDialog", async (event, data) => {
-        const action = await showUnsavedChangesDialog();
-
-        if (action === "save") {
-            try {
-                logger.info("Saving file:", data.file + " to " + data.path);
-                await fs.promises.writeFile(data.path, data.content);
-        
-                const window = BrowserWindow.fromWebContents(event.sender);
-                if (window) closeWindow(window);
-
-            } catch (error) {
-                logger.error("Error saving file:", error);
-                dialog.showErrorBox("Error saving file", "An error occurred while saving the file. Please try again.");
-                throw error;
-            }
-        }
-        
-        if (action === "discard") {
-            const window = BrowserWindow.fromWebContents(event.sender);
-            if (window) closeWindow(window);
-            return;
-        }
-
-        if (action === "cancel") return;
-    });
-
-    ipcMain.handle("close", (event, data) => {
-        const window = BrowserWindow.fromWebContents(event.sender);
-        if (window) closeWindow(window);
     });
 
     app.setAboutPanelOptions({
