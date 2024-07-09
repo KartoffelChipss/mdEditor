@@ -1,6 +1,6 @@
 import { app, BrowserWindow, nativeTheme, shell, ipcMain, nativeImage, protocol, dialog } from 'electron';
 import logger from 'electron-log/main';
-import { closeWindow, createWindow, setPath } from './windowManager';
+import {closeWindow, createWindow, getAllWindows, requestWindowClose, setPath} from './windowManager';
 import fs from 'fs';
 import { showOpenFileDialog, showUnsavedChangesDialog } from "./dialog";
 import { updateMenu } from './menus/appMenu';
@@ -175,6 +175,12 @@ app.on('open-file', (event, filePath) => {
         initialFile = filePath;
     }
 });
+
+app.on('before-quit', (event) => {
+    for (const window of getAllWindows()) {
+        if (window) closeWindow(window);
+    }
+})
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {

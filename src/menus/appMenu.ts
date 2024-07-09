@@ -1,5 +1,13 @@
 import { app, BrowserWindow, Menu, MenuItemConstructorOptions, clipboard, shell } from "electron";
-import { createWindow, getAllWindows, getFocusedWindow, getPath, openFileInWindow, setPath } from "../windowManager";
+import {
+    closeWindow,
+    createWindow,
+    getAllWindows,
+    getFocusedWindow,
+    getPath,
+    openFileInWindow,
+    setPath
+} from "../windowManager";
 import { openFile, appRoot } from "../main";
 import { showSaveFileDialog } from "../dialog";
 import path, { basename } from "path";
@@ -128,7 +136,7 @@ export function updateMenu() {
             { type: 'separator' },
             {
                 role: 'quit',
-                label: 'Quit mdEditor'
+                label: 'Quit mdEditor',
             }
         ]
     };

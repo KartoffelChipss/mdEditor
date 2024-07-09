@@ -30,6 +30,10 @@ export function getAllWindows(): (BrowserWindow | null)[] {
     return BrowserWindow.getAllWindows();
 }
 
+export function requestWindowClose(window: BrowserWindow) {
+    window.webContents.send("closeWindow");
+}
+
 export function closeWindow(window: BrowserWindow) {
     const filePath = getPath(window);
     if (filePath) delete windows[filePath];
@@ -74,8 +78,7 @@ export function createWindow(filePath: string | null = null) {
 
     mainWindow.on("close", (e) => {
         e.preventDefault();
-
-        mainWindow.webContents.send("closeWindow");
+        requestWindowClose(mainWindow);
     });
 
     mainWindow.on("enter-full-screen", () => mainWindow.webContents.send("fullscreenChanged", true));
